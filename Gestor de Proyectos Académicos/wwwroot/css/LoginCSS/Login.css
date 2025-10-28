@@ -11,3 +11,12 @@
     border-radius: 15px;
     box-shadow: 0 0 20px rgba(0,0,0,.15);
 }
+
+
+.borrarDespuesdedescarga {
+    background: rgba(255, 255, 255, 0.95);
+    color: blue;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,.15);
+}
