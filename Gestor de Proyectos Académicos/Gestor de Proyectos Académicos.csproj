@@ -7,4 +7,8 @@
     <RootNamespace>Gestor_de_Proyectos_Académicos</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GestorAcademicoBLL\GestorAcademicoBLL.csproj" />
+  </ItemGroup>
+
 </Project>
