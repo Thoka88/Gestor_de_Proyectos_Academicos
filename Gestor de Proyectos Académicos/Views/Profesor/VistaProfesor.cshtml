@@ -1,0 +1,28 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<GestorAcademicoEntities.Curso>
+
+<h2>Bienvenido profesor @ViewBag.Usuario 👨‍🏫</h2>
+
+<div class="row mt-4">
+    @foreach (var curso in Model)
+    {
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">@curso.NombreCurso</h5>
+                    <p class="card-text mb-1"><i class="bi bi-calendar3"></i> @curso.CodigoCurso</p>
+                    <p class="card-text mb-1"><i class="bi bi-building"></i> Aula: @curso.Descripcion</p>
+                    <a asp-controller="ProyectoProfesor"
+                       asp-action="VistaProyectosProfesor"
+                       asp-route-idCurso="@curso.Id_Curso"
+                       class="btn btn-outline-primary btn-sm">
+                        Ingresar →
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

@@ -1,0 +1,81 @@
+﻿@model List<GestorAcademicoEntities.Proyecto>
+
+@{
+    ViewData["Title"] = "Proyectos del Curso";
+}
+
+<div class="container mt-4">
+    <h2>Proyectos del curso: @ViewBag.NombreCurso</h2>
+    <hr />
+
+    <!-- Formulario para agregar proyecto -->
+    <form asp-action="AgregarProyecto" method="post" class="mb-4">
+        <input type="hidden" name="Id_Curso" value="@ViewBag.IdCurso" />
+        <div class="row g-2 align-items-center">
+            <div class="col-md-3">
+                <input name="Nombre_Proyecto" class="form-control" placeholder="Nombre del proyecto" required />
+            </div>
+            <div class="col-md-3">
+                <input name="Descripcion_Proyecto" class="form-control" placeholder="Descripción" />
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="Fecha_Inicio" class="form-control" required />
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="Fecha_Finalizacion" class="form-control" required />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-plus-circle"></i> Agregar
+                </button>
+            </div>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-striped table-bordered align-middle shadow-sm">
+            <thead class="table-primary">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Inicio</th>
+                    <th>Finalización</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.Nombre_Proyecto</td>
+                        <td>@p.Estado_Proyecto</td>
+                        <td>@p.Fecha_Inicio.ToShortDateString()</td>
+                        <td>@p.Fecha_Finalizacion.ToShortDateString()</td>
+                        <td>
+                            <a asp-action="DetalleProyecto" asp-route-idProyecto="@p.Id_Proyecto" class="btn btn-info btn-sm">
+                                <i class="bi bi-people"></i> Ver estudiantes
+                            </a>
+
+                            <form asp-action="EliminarProyecto" method="post" style="display:inline;">
+                                <input type="hidden" name="idProyecto" value="@p.Id_Proyecto" />
+                                <input type="hidden" name="idCurso" value="@ViewBag.IdCurso" />
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">No hay proyectos registrados para este curso.</div>
+    }
+
+    <a asp-controller="Profesor" asp-action="VistaProfesor" class="btn btn-outline-secondary mt-3">
+        <i class="bi bi-arrow-left"></i> Volver a mis cursos
+    </a>
+</div>
