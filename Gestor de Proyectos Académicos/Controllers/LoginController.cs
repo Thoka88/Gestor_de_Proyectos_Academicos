@@ -21,6 +21,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
             {
                 HttpContext.Session.SetString("Usuario", user.Nombre_Usuario);
                 HttpContext.Session.SetString("Rol", user.Rol_Usuario);
+                HttpContext.Session.SetInt32("IdUsuario", user.Id_Usuario); 
 
                 if (user.Rol_Usuario == "Profesor")
                     return RedirectToAction("VistaProfesor", "Profesor");
