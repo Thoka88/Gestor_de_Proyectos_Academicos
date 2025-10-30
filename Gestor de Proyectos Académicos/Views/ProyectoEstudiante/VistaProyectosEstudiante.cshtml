@@ -1,0 +1,41 @@
+﻿@model List<GestorAcademicoEntities.Proyecto>
+
+@{
+    ViewData["Title"] = "Mis Proyectos del Curso";
+}
+
+<div class="container mt-4">
+    <h2>Mis proyectos del curso: @ViewBag.NombreCurso</h2>
+    <hr />
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var p in Model)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm h-100 border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">@p.Nombre_Proyecto</h5>
+                            <p class="card-text">@p.Descripcion_Proyecto</p>
+                            <p><strong>Estado:</strong> @p.Estado_Proyecto</p>
+                            <p><strong>Fecha fin:</strong> @p.Fecha_Finalizacion.ToShortDateString()</p>
+                            <a asp-action="DetalleProyecto" asp-route-idProyecto="@p.Id_Proyecto"
+                               class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-card-checklist"></i> Ver mis tareas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No tienes proyectos asignados en este curso.</div>
+    }
+
+    <a asp-controller="Estudiante" asp-action="VistaEstudiante" class="btn btn-outline-secondary mt-3">
+        <i class="bi bi-arrow-left"></i> Volver a mis cursos
+    </a>
+</div>
