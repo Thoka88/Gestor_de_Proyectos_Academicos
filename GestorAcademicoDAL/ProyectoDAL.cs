@@ -24,7 +24,7 @@ namespace GestorAcademicoDAL
                 {
                     lista.Add(new Proyecto
                     {
-                        Id_Proyecto = (int)dr["Id_Proyecto"],
+                       
                         Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
                         Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
                         Fecha_Inicio = (DateTime)dr["Fecha_Inicio"],
@@ -41,7 +41,7 @@ namespace GestorAcademicoDAL
         {
             using (SqlConnection conn = Conexion.ObtenerConexion())
             {
-                conn.Open();
+               
                 string query = @"INSERT INTO Proyectos 
                     (Nombre_Proyecto, Descripcion_Proyecto, Fecha_Inicio, Fecha_Finalizacion, Estado_Proyecto, Id_Curso)
                     VALUES (@Nombre, @Descripcion, @Inicio, @Fin, @Estado, @Curso)";
