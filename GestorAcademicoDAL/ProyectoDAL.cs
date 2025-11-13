@@ -41,7 +41,7 @@ namespace GestorAcademicoDAL
         {
             using (SqlConnection conn = Conexion.ObtenerConexion())
             {
-                conn.Open();
+               
                 string query = @"INSERT INTO Proyectos 
                     (Nombre_Proyecto, Descripcion_Proyecto, Fecha_Inicio, Fecha_Finalizacion, Estado_Proyecto, Id_Curso)
                     VALUES (@Nombre, @Descripcion, @Inicio, @Fin, @Estado, @Curso)";
