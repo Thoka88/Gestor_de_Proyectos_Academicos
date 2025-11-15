@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Crear tarea para estudiante";
+}
+
+<div class="container mt-4">
+    <h3>Asignar tarea al estudiante (Id: @ViewBag.IdUsuario)</h3>
+    <hr />
+
+    <form asp-action="CrearTareaEnProyecto" method="post">
+        <input type="hidden" name="idProyecto" value="@ViewBag.IdProyecto" />
+        <input type="hidden" name="idCurso" value="@ViewBag.IdCurso" />
+        <input type="hidden" name="idUsuario" value="@ViewBag.IdUsuario" />
+
+        <div class="mb-3">
+            <label class="form-label">Título de la tarea</label>
+            <input type="text" name="titulo" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea name="descripcion" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Fecha inicio</label>
+                <input type="date" name="fechaInicio" class="form-control" required />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Fecha fin</label>
+                <input type="date" name="fechaFin" class="form-control" required />
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-check-circle"></i> Guardar tarea
+        </button>
+
+        <a asp-action="DetalleProyecto"
+           asp-route-idProyecto="@ViewBag.IdProyecto"
+           asp-route-idCurso="@ViewBag.IdCurso"
+           class="btn btn-secondary ms-2">
+            Cancelar
+        </a>
+    </form>
+</div>
+

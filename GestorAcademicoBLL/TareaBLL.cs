@@ -20,6 +20,10 @@ namespace GestorAcademicoBLL
 
         public void AgregarTarea(Tarea tarea)
         {
+            // Si querés, podés forzar estado por defecto:
+            if (string.IsNullOrEmpty(tarea.Estado_Tarea))
+                tarea.Estado_Tarea = "Pendiente";
+
             _dal.AgregarTarea(tarea);
         }
 

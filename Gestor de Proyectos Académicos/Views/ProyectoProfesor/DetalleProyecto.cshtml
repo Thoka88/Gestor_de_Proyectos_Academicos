@@ -1,0 +1,109 @@
+﻿@model Gestor_de_Proyectos_Académicos.Models.ProyectoEstudiantesViewModel
+
+@{
+    ViewData["Title"] = "Estudiantes del proyecto";
+}
+
+<div class="container mt-4">
+
+    <h2>Proyecto: @Model.NombreProyecto</h2>
+    <h5 class="text-muted">Curso ID: @Model.IdCurso</h5>
+    <hr />
+
+    <!-- Formulario para agregar estudiante al proyecto -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            Agregar estudiante al proyecto
+        </div>
+        <div class="card-body">
+            @if (Model.EstudiantesDisponibles.Any())
+            {
+                <form asp-action="AgregarEstudianteProyecto" method="post" class="row g-2">
+                    <input type="hidden" name="idProyecto" value="@Model.IdProyecto" />
+                    <input type="hidden" name="idCurso" value="@Model.IdCurso" />
+
+                    <div class="col-md-6">
+                        <select name="idUsuario" class="form-select" required>
+                            <option value="">Seleccione un estudiante</option>
+                            @foreach (var est in Model.EstudiantesDisponibles)
+                            {
+                                <option value="@est.Id_Usuario">@est.Nombre_Usuario</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-person-plus"></i> Agregar
+                        </button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-info">No hay estudiantes disponibles.</div>
+            }
+        </div>
+    </div>
+
+    <!-- Listado de estudiantes asignados -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            Estudiantes asignados al proyecto
+        </div>
+
+        @if (Model.EstudiantesAsignados.Any())
+        {
+            <table class="table table-striped table-bordered mb-0">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th style="width:200px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var est in Model.EstudiantesAsignados)
+                    {
+                        <tr>
+                            <td>@est.Nombre_Usuario</td>
+                            <td>
+                                <!-- Ver tareas del estudiante en este proyecto -->
+                                <a asp-action="VerTareasEstudiante"
+                                   asp-route-idProyecto="@Model.IdProyecto"
+                                   asp-route-idCurso="@Model.IdCurso"
+                                   asp-route-idUsuario="@est.Id_Usuario"
+                                   class="btn btn-warning btn-sm me-1">
+                                    <i class="bi bi-clipboard-check"></i> Ver tareas
+                                </a>
+
+                                <!-- Quitar del proyecto -->
+                                <form asp-action="EliminarEstudianteProyecto" method="post" style="display:inline;">
+                                    <input type="hidden" name="idProyecto" value="@Model.IdProyecto" />
+                                    <input type="hidden" name="idCurso" value="@Model.IdCurso" />
+                                    <input type="hidden" name="idUsuario" value="@est.Id_Usuario" />
+
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-person-dash"></i> Quitar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="p-3">
+                <div class="alert alert-info mb-0">No hay estudiantes asignados.</div>
+            </div>
+        }
+    </div>
+
+    <a asp-action="VistaProyectosProfesor" asp-route-idCurso="@Model.IdCurso" class="btn btn-outline-secondary mt-3">
+        <i class="bi bi-arrow-left"></i> Volver a proyectos
+    </a>
+
+</div>
+
