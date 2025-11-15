@@ -16,7 +16,7 @@ namespace GestorAcademicoDAL
             var lista = new List<Tarea>();
             using (SqlConnection conn = Conexion.ObtenerConexion())
             {
-                conn.Open();
+                
                 string query = @"SELECT * FROM Tareas 
                                  WHERE Id_Usuario = @IdUsuario AND Id_Proyecto = @IdProyecto";
                 SqlCommand cmd = new SqlCommand(query, conn);
@@ -44,20 +44,22 @@ namespace GestorAcademicoDAL
 
         public void AgregarTarea(Tarea tarea)
         {
-            using (SqlConnection conn = Conexion.ObtenerConexion())
+            using (SqlConnection con = Conexion.ObtenerConexion())
             {
-                conn.Open();
-                string query = @"INSERT INTO Tareas 
-                                (Titulo_Tarea, Descripcion_Tarea, Estado_Tarea, Fecha_Inicio, Fecha_Finalizacion, Id_Usuario, Id_Proyecto)
-                                VALUES (@Titulo, @Descripcion, @Estado, @Inicio, @Fin, @Usuario, @Proyecto)";
-                SqlCommand cmd = new SqlCommand(query, conn);
+                string query = @"
+                    INSERT INTO Tareas (Titulo_Tarea, Descripcion_Tarea, Estado_Tarea,
+                                        Fecha_Inicio, Fecha_Finalizacion, Id_Usuario, Id_Proyecto)
+                    VALUES (@Titulo, @Descripcion, @Estado, @FechaInicio, @FechaFin, @IdUsuario, @IdProyecto)";
+
+                SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Titulo", tarea.Titulo_Tarea);
                 cmd.Parameters.AddWithValue("@Descripcion", tarea.Descripcion_Tarea);
                 cmd.Parameters.AddWithValue("@Estado", tarea.Estado_Tarea);
-                cmd.Parameters.AddWithValue("@Inicio", tarea.Fecha_Inicio);
-                cmd.Parameters.AddWithValue("@Fin", tarea.Fecha_Finalizacion);
-                cmd.Parameters.AddWithValue("@Usuario", tarea.Id_Usuario);
-                cmd.Parameters.AddWithValue("@Proyecto", tarea.Id_Proyecto);
+                cmd.Parameters.AddWithValue("@FechaInicio", tarea.Fecha_Inicio);
+                cmd.Parameters.AddWithValue("@FechaFin", tarea.Fecha_Finalizacion);
+                cmd.Parameters.AddWithValue("@IdUsuario", tarea.Id_Usuario);
+                cmd.Parameters.AddWithValue("@IdProyecto", tarea.Id_Proyecto);
+
                 cmd.ExecuteNonQuery();
             }
         }
@@ -66,30 +68,26 @@ namespace GestorAcademicoDAL
         {
             using (SqlConnection conn = Conexion.ObtenerConexion())
             {
-                conn.Open();
-                string query = @"UPDATE Tareas SET 
-                                Titulo_Tarea = @Titulo,
-                                Descripcion_Tarea = @Descripcion,
-                                Estado_Tarea = @Estado,
-                                Fecha_Inicio = @Inicio,
-                                Fecha_Finalizacion = @Fin
-                                WHERE Id_Tarea = @IdTarea";
+                string query = @"
+            UPDATE Tareas
+            SET Estado_Tarea = @Estado
+            WHERE Id_Tarea = @IdTarea";
+
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Titulo", tarea.Titulo_Tarea);
-                cmd.Parameters.AddWithValue("@Descripcion", tarea.Descripcion_Tarea);
-                cmd.Parameters.AddWithValue("@Estado", tarea.Estado_Tarea);
-                cmd.Parameters.AddWithValue("@Inicio", tarea.Fecha_Inicio);
-                cmd.Parameters.AddWithValue("@Fin", tarea.Fecha_Finalizacion);
+                cmd.Parameters.AddWithValue("@Estado", tarea.Estado_Tarea ?? "Pendiente");
                 cmd.Parameters.AddWithValue("@IdTarea", tarea.Id_Tarea);
+
                 cmd.ExecuteNonQuery();
             }
         }
+
+
 
         public void EliminarTarea(int idTarea)
         {
             using (SqlConnection conn = Conexion.ObtenerConexion())
             {
-                conn.Open();
+                
                 string query = "DELETE FROM Tareas WHERE Id_Tarea = @IdTarea";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@IdTarea", idTarea);

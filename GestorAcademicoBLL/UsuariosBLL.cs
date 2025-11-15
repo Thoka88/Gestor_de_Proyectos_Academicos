@@ -1,4 +1,5 @@
-﻿using GestorAcademicoDAL;
+﻿using GestorAcademicoBLL.Helpers;
+using GestorAcademicoDAL;
 using GestorAcademicoEntities;
 
 
@@ -12,7 +13,20 @@ namespace GestorAcademicoBLL
             if (string.IsNullOrEmpty(nombreUsuario) || string.IsNullOrEmpty(contraseña))
                 return null;
 
-            return UsuarioDAL.IniciarSesion(nombreUsuario, contraseña);
+            string contraseñaHash = SeguridadHelper.HashSHA256(contraseña);
+
+           
+            return UsuarioDAL.IniciarSesion(nombreUsuario, contraseñaHash);
+
+
         }
+        public List<Usuarios> ObtenerEstudiantesPorCurso(int idCurso)
+           => UsuarioDAL.ObtenerEstudiantesPorCurso(idCurso);
+        public  Usuarios ObtenerUsuarioPorId(int idUsuario)
+        {
+            return UsuarioDAL.ObtenerUsuarioPorId(idUsuario);
+        }
+
+
     }
 }

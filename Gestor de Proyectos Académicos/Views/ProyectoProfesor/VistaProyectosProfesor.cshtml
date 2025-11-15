@@ -16,7 +16,7 @@
                 <input name="Nombre_Proyecto" class="form-control" placeholder="Nombre del proyecto" required />
             </div>
             <div class="col-md-3">
-                <input name="Descripcion_Proyecto" class="form-control" placeholder="Descripción" />
+                <input name="Descripcion_Proyecto" class="form-control" placeholder="Descripción" required />
             </div>
             <div class="col-md-2">
                 <input type="date" name="Fecha_Inicio" class="form-control" required />
@@ -53,9 +53,13 @@
                         <td>@p.Fecha_Inicio.ToShortDateString()</td>
                         <td>@p.Fecha_Finalizacion.ToShortDateString()</td>
                         <td>
-                            <a asp-action="DetalleProyecto" asp-route-idProyecto="@p.Id_Proyecto" class="btn btn-info btn-sm">
+                            <a asp-action="DetalleProyecto"
+                               asp-route-idProyecto="@p.Id_Proyecto"
+                               asp-route-idCurso="@ViewBag.IdCurso"
+                               class="btn btn-info btn-sm">
                                 <i class="bi bi-people"></i> Ver estudiantes
                             </a>
+
 
                             <form asp-action="EliminarProyecto" method="post" style="display:inline;">
                                 <input type="hidden" name="idProyecto" value="@p.Id_Proyecto" />
