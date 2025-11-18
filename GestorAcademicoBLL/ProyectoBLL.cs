@@ -53,6 +53,11 @@ namespace GestorAcademicoBLL
         // 🔹 Nuevo: quitar estudiante
         public void EliminarEstudianteDeProyecto(int idProyecto, int idUsuario)
             => _dal.EliminarEstudianteDeProyecto(idProyecto, idUsuario);
+        public List<Usuarios> ObtenerEstudiantesAsignados(int idProyecto)
+        {
+            return _dal.ObtenerEstudiantesAsignados(idProyecto);
+        }
+
     }
 }
 

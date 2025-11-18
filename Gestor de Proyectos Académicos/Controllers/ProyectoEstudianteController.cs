@@ -1,6 +1,7 @@
 ﻿using GestorAcademicoBLL;
 using GestorAcademicoEntities;
 using Microsoft.AspNetCore.Mvc;
+using Gestor_de_Proyectos_Académicos.Models;
 
 namespace Gestor_de_Proyectos_Académicos.Controllers
 {
@@ -83,6 +84,53 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
             _tareaBLL.EliminarTarea(idTarea);
             return RedirectToAction("DetalleProyecto", new { idProyecto, idCurso });
         }
+
+        public IActionResult ReportePersonalEstudiante(int idCurso, int? idProyecto)
+        {
+            var rol = HttpContext.Session.GetString("Rol");
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+
+            if (rol != "Estudiante" || idUsuario == null)
+                return RedirectToAction("Login", "Login");
+
+            // Todos los proyectos donde participa el estudiante en ese curso
+            var proyectos = _proyectoBLL.ObtenerProyectosDeEstudiante(idUsuario.Value, idCurso);
+
+            // 👇 Si viene idProyecto, filtramos solo ese
+            if (idProyecto.HasValue)
+                proyectos = proyectos
+                    .Where(p => p.Id_Proyecto == idProyecto.Value)
+                    .ToList();
+
+            var items = new List<ReporteProyectoPersonalItem>();
+
+            foreach (var p in proyectos)
+            {
+                var tareas = _tareaBLL.ObtenerTareasDeEstudianteEnProyecto(idUsuario.Value, p.Id_Proyecto);
+
+                int total = tareas.Count;
+                int completadas = tareas.Count(t => t.Estado_Tarea == "Completada");
+
+                items.Add(new ReporteProyectoPersonalItem
+                {
+                    IdProyecto = p.Id_Proyecto,
+                    NombreProyecto = p.Nombre_Proyecto,
+                    TotalTareas = total,
+                    TareasCompletadas = completadas,
+                    Tareas = tareas
+                });
+            }
+
+            var vm = new ReportePersonalViewModel
+            {
+                IdCurso = idCurso,
+                Proyectos = items
+            };
+
+            return View("ReportePersonalEstudiante", vm);
+        }
+
+
     }
 }
 
