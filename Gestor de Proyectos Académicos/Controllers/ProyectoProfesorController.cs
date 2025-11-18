@@ -200,6 +200,44 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
             // 6. Retornar la vista con el modelo
             return View("DetalleProyecto", vm);
         }
+        public IActionResult ReporteProyecto(int idProyecto, int idCurso)
+        {
+            var rol = HttpContext.Session.GetString("Rol");
+            if (rol != "Profesor")
+                return RedirectToAction("Login", "Login");
+
+            // 1. Información del proyecto
+            var proyecto = _proyectoBLL.ObtenerProyectoPorId(idProyecto);
+
+            // 2. Estudiantes asignados
+            var estudiantes = _proyectoBLL.ObtenerEstudiantesAsignados(idProyecto);
+
+            // 3. Tareas del proyecto
+            var tareas = _tareaBLL.ObtenerTareasPorProyecto(idProyecto);
+
+            // 4. Crear ViewModel
+            var vm = new ReporteProyectoViewModel
+            {
+                IdProyecto = idProyecto,
+                NombreProyecto = proyecto.Nombre_Proyecto,
+
+                TotalTareas = tareas.Count,
+                TareasCompletadas = tareas.Count(t => t.Estado_Tarea == "Completada"),
+
+                Estudiantes = estudiantes.Select(est => new ReporteEstudianteItem
+                {
+                    IdUsuario = est.Id_Usuario,
+                    Nombre = est.Nombre_Usuario,
+                    TotalTareas = tareas.Count(t => t.Id_Usuario == est.Id_Usuario),
+                    Completadas = tareas.Count(t => t.Id_Usuario == est.Id_Usuario && t.Estado_Tarea == "Completada")
+                }).ToList(),
+
+                IdCurso = idCurso
+            };
+
+            return View("ReporteProyecto", vm);
+        }
+
 
     }
 }

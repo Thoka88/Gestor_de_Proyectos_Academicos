@@ -11,6 +11,17 @@
     <h2 class="mb-3">Mis tareas en el proyecto</h2>
     <hr />
 
+    <div class="d-flex justify-content-end mb-3">
+        <a asp-controller="ProyectoEstudiante"
+           asp-action="ReportePersonalEstudiante"
+           asp-route-idCurso="@idCurso"
+           asp-route-idProyecto="@idProyecto"
+           class="btn btn-info">
+            <i class="bi bi-bar-chart-fill"></i> Ver mi reporte de avance
+        </a>
+
+    </div>
+
     <!-- FORMULARIO: Crear nueva tarea -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">

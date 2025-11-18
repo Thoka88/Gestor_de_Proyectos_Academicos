@@ -231,6 +231,37 @@ namespace GestorAcademicoDAL
                 cmd.ExecuteNonQuery();
             }
         }
+        public List<Usuarios> ObtenerEstudiantesAsignados(int idProyecto)
+        {
+            List<Usuarios> lista = new List<Usuarios>();
+
+            using (SqlConnection con = Conexion.ObtenerConexion())
+            {
+                string query = @"
+            SELECT U.Id_Usuario, U.Nombre_Usuario, U.Correo_Usuario
+            FROM Proyectos_Estudiantes PE
+            INNER JOIN Usuarios U ON U.Id_Usuario = PE.Id_Usuario
+            WHERE PE.Id_Proyecto = @IdProyecto";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@IdProyecto", idProyecto);
+
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                while (dr.Read())
+                {
+                    lista.Add(new Usuarios
+                    {
+                        Id_Usuario = Convert.ToInt32(dr["Id_Usuario"]),
+                        Nombre_Usuario = dr["Nombre_Usuario"].ToString(),
+                        
+                    });
+                }
+            }
+
+            return lista;
+        }
+
 
     }
 }

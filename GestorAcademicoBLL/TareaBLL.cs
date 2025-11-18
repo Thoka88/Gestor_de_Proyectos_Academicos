@@ -17,6 +17,10 @@ namespace GestorAcademicoBLL
         {
             return _dal.ObtenerTareasDeEstudianteEnProyecto(idUsuario, idProyecto);
         }
+        public List<Tarea> ObtenerTareasPorProyecto(int idProyecto) 
+        {
+           return _dal.ObtenerTareasPorProyecto(idProyecto);
+        }
 
         public void AgregarTarea(Tarea tarea)
         {
