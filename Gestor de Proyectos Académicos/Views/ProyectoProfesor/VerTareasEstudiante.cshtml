@@ -1,0 +1,66 @@
+﻿@model Gestor_de_Proyectos_Académicos.Models.TareasEstudianteProyectoViewModel
+
+@{
+    ViewData["Title"] = "Tareas del estudiante";
+}
+
+<div class="container mt-4">
+    <h2>
+        Tareas de @Model.NombreEstudiante
+        <small class="text-muted">en el proyecto @Model.NombreProyecto</small>
+    </h2>
+    <hr />
+
+    <!-- Resumen rápido -->
+    @{
+        int total = Model.Tareas.Count;
+        int completadas = Model.Tareas.Count(t => t.Estado_Tarea == "Completada");
+        double porcentaje = total == 0 ? 0 : (completadas * 100.0 / total);
+    }
+
+    <div class="alert alert-info">
+        Total de tareas: <strong>@total</strong> |
+        Completadas: <strong>@completadas</strong> |
+        Avance: <strong>@porcentaje.ToString("0.0")%</strong>
+    </div>
+
+    <!-- Tabla de tareas -->
+    @if (Model.Tareas != null && Model.Tareas.Any())
+    {
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Fecha límite</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.Tareas)
+                {
+                    <tr>
+                        <td>@t.Titulo_Tarea</td>
+                        <td>@t.Descripcion_Tarea</td>
+                        <td>@t.Estado_Tarea</td>
+                        <td>@t.Fecha_Finalizacion.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            Este estudiante aún no tiene tareas en este proyecto.
+        </div>
+    }
+
+    <a asp-action="DetalleProyecto"
+       asp-route-idProyecto="@Model.IdProyecto"
+       asp-route-idCurso="@Model.IdCurso"
+       class="btn btn-outline-secondary mt-3">
+        Volver al proyecto
+    </a>
+</div>
+

@@ -1,0 +1,74 @@
+﻿@model Gestor_de_Proyectos_Académicos.Models.ReporteProyectoViewModel
+
+<div class="container mt-4">
+
+    <h2>Reporte del Proyecto</h2>
+    <h4 class="text-muted">@Model.NombreProyecto</h4>
+    <hr />
+
+    <h5>Avance general del proyecto</h5>
+
+    @{
+        string clase = Model.PorcentajeGeneral switch
+        {
+            >= 80 => "bg-success",
+            >= 50 => "bg-warning",
+            _ => "bg-danger"
+        };
+    }
+
+    <div class="progress mb-4">
+        <div class="progress-bar @clase"
+             role="progressbar"
+             style="width:@Model.PorcentajeGeneral%">
+            @Model.PorcentajeGeneral.ToString("0.0")%
+        </div>
+    </div>
+
+    <h5>Avance por estudiante</h5>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Estudiante</th>
+                <th>Tareas</th>
+                <th>Completadas</th>
+                <th>Avance</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var est in Model.Estudiantes)
+            {
+                string claseEst = est.Porcentaje switch
+                {
+                    >= 80 => "bg-success",
+                    >= 50 => "bg-warning",
+                    _ => "bg-danger"
+                };
+
+                <tr>
+                    <td>@est.Nombre</td>
+                    <td>@est.TotalTareas</td>
+                    <td>@est.Completadas</td>
+                    <td style="width:40%">
+                        <div class="progress">
+                            <div class="progress-bar @claseEst"
+                                 style="width:@est.Porcentaje%">
+                                @est.Porcentaje.ToString("0.0")%
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="VistaProyectosProfesor"
+       asp-route-idCurso="@Model.IdCurso"
+       class="btn btn-outline-secondary mt-3">
+        Volver a proyectos
+    </a>
+
+</div>
+

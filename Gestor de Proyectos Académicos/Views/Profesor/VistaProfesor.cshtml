@@ -14,7 +14,12 @@
                     <h5 class="card-title fw-bold">@curso.NombreCurso</h5>
                     <p class="card-text mb-1"><i class="bi bi-calendar3"></i> @curso.CodigoCurso</p>
                     <p class="card-text mb-1"><i class="bi bi-building"></i> Aula: @curso.Descripcion</p>
-                    <a href="#" class="btn btn-outline-primary btn-sm">Ingresar →</a>
+                    <a asp-controller="ProyectoProfesor"
+                       asp-action="VistaProyectosProfesor"
+                       asp-route-idCurso="@curso.Id_Curso"
+                       class="btn btn-outline-primary btn-sm">
+                        Ingresar →
+                    </a>
                 </div>
             </div>
         </div>
