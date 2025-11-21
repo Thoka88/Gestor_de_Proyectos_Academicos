@@ -1,63 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GestorAcademicoEntities;
 
 namespace GestorAcademicoDAL
 {
     public class UsuarioCursoDAL
     {
-        
-
+        // 🔹 1) Obtener cursos por usuario (profe o estudiante)
         public List<Curso> ObtenerCursosPorUsuario(int idUsuario)
         {
             var cursos = new List<Curso>();
 
             using (SqlConnection conn = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_UsuarioCurso_ObtenerCursosPorUsuario", conn))
             {
-                
-                string query = @"SELECT c.Id_Curso, c.Nombre_Curso, c.Codigo_Curso, c.Descripcion
-                             FROM Usuarios_Cursos uc
-                             INNER JOIN Cursos c ON uc.Id_Curso = c.Id_Curso
-                             WHERE uc.Id_Usuario = @IdUsuario";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
 
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    cursos.Add(new Curso
+                    while (reader.Read())
                     {
-                        Id_Curso = (int)reader["Id_Curso"],
-                        NombreCurso = reader["Nombre_Curso"].ToString(),
-                        CodigoCurso = reader["Codigo_Curso"].ToString(),
-                        Descripcion = reader["Descripcion"].ToString(),
-                        
-                    });
+                        cursos.Add(new Curso
+                        {
+                            Id_Curso = (int)reader["Id_Curso"],
+                            NombreCurso = reader["Nombre_Curso"].ToString(),
+                            CodigoCurso = reader["Codigo_Curso"].ToString(),
+                            Descripcion = reader["Descripcion"].ToString()
+                        });
+                    }
                 }
             }
 
             return cursos;
         }
+
+        // 🔹 2) Asignar usuario a curso
         public static void AsignarUsuarioACurso(int idUsuario, int idCurso)
         {
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_UsuarioCurso_AsignarUsuarioACurso", con))
             {
-                string query = @"
-                    INSERT INTO Usuarios_Cursos (Id_Curso, Id_Usuario, Descripcion)
-                    VALUES (@IdCurso, @IdUsuario, @Descripcion)";
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@IdCurso", idCurso);
                 cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
-                cmd.Parameters.AddWithValue("@Descripcion", "Se asigna el curso al usuario correspondiente."); 
+                cmd.Parameters.AddWithValue("@Descripcion", "Se asigna el curso al usuario correspondiente.");
 
                 cmd.ExecuteNonQuery();
             }
         }
     }
 }
+
