@@ -17,12 +17,16 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
         public IActionResult VistaProyectosProfesor(int idCurso)
         {
             var rol = HttpContext.Session.GetString("Rol");
-            if (rol != "Profesor")
+            var idProfesor = HttpContext.Session.GetInt32("IdUsuario");
+
+            if (rol != "Profesor" || idProfesor == null)
                 return RedirectToAction("Login", "Login");
 
-            var proyectos = _proyectoBLL.ObtenerProyectosPorCurso(idCurso);
+            var proyectos = _proyectoBLL.ObtenerProyectosPorCursoDeProfesor(idCurso, idProfesor.Value);
+
             ViewBag.IdCurso = idCurso;
-            ViewBag.NombreCurso = "Nombre del curso"; // opcional, si querés mostrarlo en la vista
+            ViewBag.NombreCurso = "Nombre del curso"; // si luego lo cargás desde BD, mejor
+
             return View("VistaProyectosProfesor", proyectos);
         }
 
@@ -30,13 +34,25 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
         [HttpPost]
         public IActionResult AgregarProyecto(Proyecto proyecto)
         {
-            proyecto.Estado_Proyecto = "Pendiente";
-
             var rol = HttpContext.Session.GetString("Rol");
-            if (rol != "Profesor")
+            var idProfesor = HttpContext.Session.GetInt32("IdUsuario");
+
+            if (rol != "Profesor" || idProfesor == null)
                 return RedirectToAction("Login", "Login");
 
-            _proyectoBLL.AgregarProyecto(proyecto);
+            // Estado por defecto si viene vacío
+            if (string.IsNullOrEmpty(proyecto.Estado_Proyecto))
+                proyecto.Estado_Proyecto = "Pendiente";
+
+            // Por si la vista no manda fechas, podrías poner defaults:
+            if (proyecto.Fecha_Inicio == default)
+                proyecto.Fecha_Inicio = DateTime.Now;
+
+            if (proyecto.Fecha_Finalizacion == default)
+                proyecto.Fecha_Finalizacion = proyecto.Fecha_Inicio.AddDays(7);
+
+            _proyectoBLL.AgregarProyecto(proyecto, idProfesor.Value);
+
             return RedirectToAction("VistaProyectosProfesor", new { idCurso = proyecto.Id_Curso });
         }
 
