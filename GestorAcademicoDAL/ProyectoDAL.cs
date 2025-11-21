@@ -1,278 +1,238 @@
-﻿using System;
+﻿using GestorAcademicoEntities;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GestorAcademicoEntities;
 
 namespace GestorAcademicoDAL
 {
     public class ProyectoDAL
     {
+        // 🔹 1) Proyectos por curso (general)
         public List<Proyecto> ObtenerProyectosPorCurso(int idCurso)
         {
             var lista = new List<Proyecto>();
+
             using (SqlConnection conn = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyectos_ObtenerPorCurso", conn))
             {
-               
-                string query = "SELECT * FROM Proyectos WHERE Id_Curso = @IdCurso";
-                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdCurso", idCurso);
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(new Proyecto
+                    while (dr.Read())
                     {
-                        Id_Proyecto = (int)dr["Id_Proyecto"],
-                        Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
-                        Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
-                        Fecha_Inicio = (DateTime)dr["Fecha_Inicio"],
-                        Fecha_Finalizacion = (DateTime)dr["Fecha_Finalizacion"],
-                        Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
-                        Id_Curso = (int)dr["Id_Curso"]
-                    });
+                        lista.Add(new Proyecto
+                        {
+                            Id_Proyecto = Convert.ToInt32(dr["Id_Proyecto"]),
+                            Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
+                            Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
+                            Fecha_Inicio = Convert.ToDateTime(dr["Fecha_Inicio"]),
+                            Fecha_Finalizacion = Convert.ToDateTime(dr["Fecha_Finalizacion"]),
+                            Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
+                            Id_Curso = Convert.ToInt32(dr["Id_Curso"])
+                        });
+                    }
                 }
             }
+
             return lista;
         }
+
+        // 🔹 2) Proyectos por curso filtrados por profesor
         public List<Proyecto> ObtenerProyectosPorCursoDeProfesor(int idCurso, int idProfesor)
         {
             var lista = new List<Proyecto>();
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyectos_ObtenerPorCurso_Profesor", con))
             {
-                string query = @"
-                    SELECT  p.Id_Proyecto,
-                            p.Nombre_Proyecto,
-                            p.Descripcion_Proyecto,
-                            p.Fecha_Inicio,
-                            p.Fecha_Finalizacion,
-                            p.Estado_Proyecto,
-                            p.Id_Curso
-                    FROM Proyectos p
-                    INNER JOIN Proyectos_Profesores pp
-                        ON p.Id_Proyecto = pp.Id_Proyecto
-                    WHERE p.Id_Curso = @IdCurso
-                      AND pp.Id_Usuario = @IdProfesor";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdCurso", idCurso);
                 cmd.Parameters.AddWithValue("@IdProfesor", idProfesor);
 
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(new Proyecto
+                    while (dr.Read())
                     {
-                        Id_Proyecto = (int)dr["Id_Proyecto"],
-                        Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
-                        Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
-                        Fecha_Inicio = (DateTime)dr["Fecha_Inicio"],
-                        Fecha_Finalizacion = (DateTime)dr["Fecha_Finalizacion"],
-                        Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
-                        Id_Curso = (int)dr["Id_Curso"]
-                    });
+                        lista.Add(new Proyecto
+                        {
+                            Id_Proyecto = Convert.ToInt32(dr["Id_Proyecto"]),
+                            Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
+                            Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
+                            Fecha_Inicio = Convert.ToDateTime(dr["Fecha_Inicio"]),
+                            Fecha_Finalizacion = Convert.ToDateTime(dr["Fecha_Finalizacion"]),
+                            Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
+                            Id_Curso = Convert.ToInt32(dr["Id_Curso"])
+                        });
+                    }
                 }
             }
 
             return lista;
         }
 
-
+        // 🔹 3) Agregar proyecto + relacionarlo con el profesor
         public void AgregarProyecto(Proyecto proyecto, int idProfesor)
         {
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyectos_Insertar", con))
             {
-                // 1) Insertar proyecto y obtener Id_Proyecto
-                string queryProyecto = @"
-                    INSERT INTO Proyectos
-                        (Nombre_Proyecto, Descripcion_Proyecto,
-                         Fecha_Inicio, Fecha_Finalizacion,
-                         Estado_Proyecto, Id_Curso)
-                    OUTPUT INSERTED.Id_Proyecto
-                    VALUES
-                        (@Nombre, @Descripcion,
-                         @Inicio, @Fin,
-                         @Estado, @IdCurso)";
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlCommand cmd = new SqlCommand(queryProyecto, con);
                 cmd.Parameters.AddWithValue("@Nombre", proyecto.Nombre_Proyecto);
                 cmd.Parameters.AddWithValue("@Descripcion", (object?)proyecto.Descripcion_Proyecto ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Inicio", proyecto.Fecha_Inicio);
                 cmd.Parameters.AddWithValue("@Fin", proyecto.Fecha_Finalizacion);
                 cmd.Parameters.AddWithValue("@Estado", proyecto.Estado_Proyecto ?? "Pendiente");
                 cmd.Parameters.AddWithValue("@IdCurso", proyecto.Id_Curso);
+                cmd.Parameters.AddWithValue("@IdProfesor", idProfesor);
 
-                int idProyecto = (int)cmd.ExecuteScalar();   // 👈 nuevo Id_Proyecto
-
-                // 2) Relacionar profesor con el proyecto en la tabla intermedia
-                string queryPP = @"
-                    INSERT INTO Proyectos_Profesores (Id_Proyecto, Id_Usuario)
-                    VALUES (@IdProyecto, @IdProfesor)";
-
-                SqlCommand cmdPP = new SqlCommand(queryPP, con);
-                cmdPP.Parameters.AddWithValue("@IdProyecto", idProyecto);
-                cmdPP.Parameters.AddWithValue("@IdProfesor", idProfesor);
-
-                cmdPP.ExecuteNonQuery();
+                // Si querés usar el Id_Proyecto devuelto:
+                var result = cmd.ExecuteScalar();
+                int idProyecto = result != null ? Convert.ToInt32(result) : 0;
+                // Podrías guardarlo en proyecto.Id_Proyecto si querés:
+                // proyecto.Id_Proyecto = idProyecto;
             }
         }
 
-
-
+        // 🔹 4) Editar proyecto
         public void EditarProyecto(Proyecto proyecto)
         {
             using (SqlConnection conn = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyectos_Editar", conn))
             {
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                string query = @"UPDATE Proyectos 
-                                 SET Nombre_Proyecto = @Nombre,
-                                     Descripcion_Proyecto = @Descripcion,
-                                     Fecha_Inicio = @Inicio,
-                                     Fecha_Finalizacion = @Fin,
-                                     Estado_Proyecto = @Estado
-                                 WHERE Id_Proyecto = @IdProyecto";
-                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@IdProyecto", proyecto.Id_Proyecto);
                 cmd.Parameters.AddWithValue("@Nombre", proyecto.Nombre_Proyecto);
-                cmd.Parameters.AddWithValue("@Descripcion", proyecto.Descripcion_Proyecto);
+                cmd.Parameters.AddWithValue("@Descripcion", (object?)proyecto.Descripcion_Proyecto ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Inicio", proyecto.Fecha_Inicio);
                 cmd.Parameters.AddWithValue("@Fin", proyecto.Fecha_Finalizacion);
-                cmd.Parameters.AddWithValue("@Estado", proyecto.Estado_Proyecto);
-                cmd.Parameters.AddWithValue("@IdProyecto", proyecto.Id_Proyecto);
+                cmd.Parameters.AddWithValue("@Estado", proyecto.Estado_Proyecto ?? "Pendiente");
+
                 cmd.ExecuteNonQuery();
             }
         }
 
+        // 🔹 5) Eliminar proyecto (ya lo tenías con SP)
         public void EliminarProyecto(int idProyecto)
         {
-            using (SqlConnection conn = Conexion.ObtenerConexion())
+            using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyecto_Eliminar", con))
             {
-               
-                string query = "DELETE FROM Proyectos WHERE Id_Proyecto = @IdProyecto";
-                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdProyecto", idProyecto);
+
                 cmd.ExecuteNonQuery();
             }
         }
+
+        // 🔹 6) Proyectos donde participa un estudiante (por curso)
         public List<Proyecto> ObtenerProyectosDeEstudiante(int idUsuario, int idCurso)
         {
             var lista = new List<Proyecto>();
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyectos_ObtenerPorEstudiante", con))
             {
-                string query = @"
-            SELECT DISTINCT 
-                P.Id_Proyecto,
-                P.Nombre_Proyecto,
-                P.Descripcion_Proyecto,
-                P.Fecha_Inicio,
-                P.Fecha_Finalizacion,
-                P.Estado_Proyecto,
-                P.Id_Curso
-            FROM Proyectos P
-            INNER JOIN Proyectos_Estudiantes PE
-                ON PE.Id_Proyecto = P.Id_Proyecto
-            WHERE PE.Id_Usuario = @IdUsuario
-              AND P.Id_Curso = @IdCurso";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
                 cmd.Parameters.AddWithValue("@IdCurso", idCurso);
 
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(new Proyecto
+                    while (dr.Read())
                     {
-                        Id_Proyecto = Convert.ToInt32(dr["Id_Proyecto"]),
-                        Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
-                        Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
-                        Fecha_Inicio = Convert.ToDateTime(dr["Fecha_Inicio"]),
-                        Fecha_Finalizacion = Convert.ToDateTime(dr["Fecha_Finalizacion"]),
-                        Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
-                        Id_Curso = Convert.ToInt32(dr["Id_Curso"])
-                    });
+                        lista.Add(new Proyecto
+                        {
+                            Id_Proyecto = Convert.ToInt32(dr["Id_Proyecto"]),
+                            Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
+                            Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
+                            Fecha_Inicio = Convert.ToDateTime(dr["Fecha_Inicio"]),
+                            Fecha_Finalizacion = Convert.ToDateTime(dr["Fecha_Finalizacion"]),
+                            Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
+                            Id_Curso = Convert.ToInt32(dr["Id_Curso"])
+                        });
+                    }
                 }
             }
 
             return lista;
         }
 
+        // 🔹 7) Obtener un proyecto por Id
         public Proyecto ObtenerProyectoPorId(int idProyecto)
         {
             Proyecto proyecto = null;
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyecto_ObtenerPorId", con))
             {
-                string query = @"
-                    SELECT Id_Proyecto, Nombre_Proyecto, Descripcion_Proyecto,
-                           Fecha_Inicio, Fecha_Finalizacion, Estado_Proyecto, Id_Curso
-                    FROM Proyectos
-                    WHERE Id_Proyecto = @Id";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdProyecto", idProyecto);
 
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@Id", idProyecto);
-
-                SqlDataReader dr = cmd.ExecuteReader();
-                if (dr.Read())
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    proyecto = new Proyecto
+                    if (dr.Read())
                     {
-                        Id_Proyecto = Convert.ToInt32(dr["Id_Proyecto"]),
-                        Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
-                        Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
-                        Fecha_Inicio = Convert.ToDateTime(dr["Fecha_Inicio"]),
-                        Fecha_Finalizacion = Convert.ToDateTime(dr["Fecha_Finalizacion"]),
-                        Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
-                        Id_Curso = Convert.ToInt32(dr["Id_Curso"])
-                    };
+                        proyecto = new Proyecto
+                        {
+                            Id_Proyecto = Convert.ToInt32(dr["Id_Proyecto"]),
+                            Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
+                            Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
+                            Fecha_Inicio = Convert.ToDateTime(dr["Fecha_Inicio"]),
+                            Fecha_Finalizacion = Convert.ToDateTime(dr["Fecha_Finalizacion"]),
+                            Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
+                            Id_Curso = Convert.ToInt32(dr["Id_Curso"])
+                        };
+                    }
                 }
             }
 
             return proyecto;
         }
+
+        // 🔹 8) Estudiantes de un proyecto (con más datos si querés)
         public List<Usuarios> ObtenerEstudiantesPorProyecto(int idProyecto)
         {
             var lista = new List<Usuarios>();
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyecto_ObtenerEstudiantes", con))
             {
-                string query = @"
-                    SELECT U.Id_Usuario, U.Nombre_Usuario, R.Nombre_Rol
-                    FROM Proyectos_Estudiantes PE
-                    INNER JOIN Usuarios U ON U.Id_Usuario = PE.Id_Usuario
-                    INNER JOIN Roles_Usuarios R ON R.Id_Rol = U.Id_Rol
-                    WHERE PE.Id_Proyecto = @IdProyecto";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdProyecto", idProyecto);
 
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(new Usuarios
+                    while (dr.Read())
                     {
-                        Id_Usuario = Convert.ToInt32(dr["Id_Usuario"]),
-                        Nombre_Usuario = dr["Nombre_Usuario"].ToString(),
-                        Rol_Usuario = dr["Nombre_Rol"].ToString()
-                    });
+                        lista.Add(new Usuarios
+                        {
+                            Id_Usuario = Convert.ToInt32(dr["Id_Usuario"]),
+                            Nombre_Usuario = dr["Nombre_Usuario"].ToString(),
+                            // Si en el SP devolvés Nombre_Rol:
+                            // Rol_Usuario = dr["Nombre_Rol"].ToString()
+                        });
+                    }
                 }
             }
 
             return lista;
         }
 
-        // 🔹 2) Asignar estudiante a proyecto (INSERT en tabla intermedia)
+        // 🔹 9) Asignar estudiante a proyecto
         public void AsignarEstudianteAProyecto(int idProyecto, int idUsuario)
         {
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyecto_AsignarEstudiante", con))
             {
-                string query = @"
-                    INSERT INTO Proyectos_Estudiantes (Id_Proyecto, Id_Usuario)
-                    VALUES (@IdProyecto, @IdUsuario)";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdProyecto", idProyecto);
                 cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
 
@@ -280,53 +240,47 @@ namespace GestorAcademicoDAL
             }
         }
 
-        // 🔹 3) Quitar estudiante del proyecto (DELETE en tabla intermedia)
+        // 🔹 10) Quitar estudiante del proyecto
         public void EliminarEstudianteDeProyecto(int idProyecto, int idUsuario)
         {
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyecto_QuitarEstudiante", con))
             {
-                string query = @"
-            DELETE FROM Proyectos_Estudiantes
-            WHERE Id_Proyecto = @IdProyecto AND Id_Usuario = @IdUsuario";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdProyecto", idProyecto);
                 cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
 
                 cmd.ExecuteNonQuery();
             }
         }
+
+        // 🔹 11) Estudiantes asignados (puede reutilizar el mismo SP)
         public List<Usuarios> ObtenerEstudiantesAsignados(int idProyecto)
         {
-            List<Usuarios> lista = new List<Usuarios>();
+            var lista = new List<Usuarios>();
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Proyecto_ObtenerEstudiantes", con))
             {
-                string query = @"
-            SELECT U.Id_Usuario, U.Nombre_Usuario, U.Correo_Usuario
-            FROM Proyectos_Estudiantes PE
-            INNER JOIN Usuarios U ON U.Id_Usuario = PE.Id_Usuario
-            WHERE PE.Id_Proyecto = @IdProyecto";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdProyecto", idProyecto);
 
-                SqlDataReader dr = cmd.ExecuteReader();
-
-                while (dr.Read())
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(new Usuarios
+                    while (dr.Read())
                     {
-                        Id_Usuario = Convert.ToInt32(dr["Id_Usuario"]),
-                        Nombre_Usuario = dr["Nombre_Usuario"].ToString(),
-                        
-                    });
+                        lista.Add(new Usuarios
+                        {
+                            Id_Usuario = Convert.ToInt32(dr["Id_Usuario"]),
+                            Nombre_Usuario = dr["Nombre_Usuario"].ToString(),
+                            // Agregás correo si lo trae el SP:
+                            // Correo_Usuario = dr["Correo_Usuario"].ToString()
+                        });
+                    }
                 }
             }
 
             return lista;
         }
-
-
     }
 }

@@ -1,31 +1,26 @@
 ﻿using GestorAcademicoEntities;
 using System;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace GestorAcademicoDAL
 {
     public class UsuarioDAL
     {
+        // 🔹 LOGIN
         public static Usuarios IniciarSesion(string nombreUsuario, string contrasenaHash)
         {
             Usuarios user = null;
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Usuario_IniciarSesion", con))
             {
-                string query = @"
-            SELECT U.Id_Usuario, U.Nombre_Usuario, U.Contrasena_Usuario, R.Nombre_Rol
-            FROM Usuarios U
-            INNER JOIN Roles_Usuarios R ON U.Id_Rol = R.Id_Rol
-            WHERE U.Nombre_Usuario = @Nombre AND U.Contrasena_Usuario = @Contrasena";
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Nombre", nombreUsuario);
-
-                // 🔹 Aquí ahora se compara hash VS hash
                 cmd.Parameters.AddWithValue("@Contrasena", contrasenaHash);
 
                 SqlDataReader dr = cmd.ExecuteReader();
-
                 if (dr.Read())
                 {
                     user = new Usuarios
@@ -41,21 +36,15 @@ namespace GestorAcademicoDAL
             return user;
         }
 
+        // 🔹 Obtener estudiantes por curso
         public static List<Usuarios> ObtenerEstudiantesPorCurso(int idCurso)
         {
             var lista = new List<Usuarios>();
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Usuarios_ObtenerEstudiantesPorCurso", con))
             {
-                string query = @"
-            SELECT DISTINCT U.Id_Usuario, U.Nombre_Usuario, R.Nombre_Rol
-            FROM Usuarios U
-            INNER JOIN Usuarios_Cursos UC ON UC.Id_Usuario = U.Id_Usuario
-            INNER JOIN Roles_Usuarios R ON R.Id_Rol = U.Id_Rol
-            WHERE UC.Id_Curso = @IdCurso
-              AND R.Nombre_Rol = 'Estudiante'";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdCurso", idCurso);
 
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -72,23 +61,19 @@ namespace GestorAcademicoDAL
 
             return lista;
         }
+
+        // 🔹 Obtener usuario por ID
         public static Usuarios ObtenerUsuarioPorId(int idUsuario)
         {
             Usuarios user = null;
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Usuario_ObtenerPorId", con))
             {
-                string query = @"
-            SELECT U.Id_Usuario, U.Nombre_Usuario, U.Contrasena_Usuario, R.Nombre_Rol
-            FROM Usuarios U
-            INNER JOIN Roles_Usuarios R ON U.Id_Rol = R.Id_Rol
-            WHERE U.Id_Usuario = @IdUsuario";
-
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
 
                 SqlDataReader dr = cmd.ExecuteReader();
-
                 if (dr.Read())
                 {
                     user = new Usuarios
@@ -102,14 +87,15 @@ namespace GestorAcademicoDAL
             }
 
             return user;
-
         }
+
+        // 🔹 Ver si existe un nombre de usuario
         public static bool ExisteNombreUsuario(string nombreUsuario)
         {
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Usuario_ExisteNombre", con))
             {
-                string query = "SELECT COUNT(1) FROM Usuarios WHERE Nombre_Usuario = @Nombre";
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Nombre", nombreUsuario);
 
                 int count = (int)cmd.ExecuteScalar();
@@ -117,22 +103,14 @@ namespace GestorAcademicoDAL
             }
         }
 
+        // 🔹 Registrar usuario
         public static int RegistrarUsuario(Usuarios usuario)
         {
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Usuario_Registrar", con))
             {
-                string query = @"
-            INSERT INTO Usuarios
-                (Nombre_Usuario, Apellidos_Usuario, Contrasena_Usuario,
-                 Cedula_Usuario, Correo_Usuario, Telefono_Usuario,
-                 Edad_Usuario, Id_Rol)
-            OUTPUT INSERTED.Id_Usuario
-            VALUES
-                (@Nombre, @Apellidos, @Contrasena,
-                 @Cedula, @Correo, @Telefono,
-                 @Edad, @IdRol)";
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Nombre", usuario.Nombre_Usuario);
                 cmd.Parameters.AddWithValue("@Apellidos", (object?)usuario.Apellidos_Usuario ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Contrasena", usuario.Contrasena_Usuario);
@@ -142,11 +120,8 @@ namespace GestorAcademicoDAL
                 cmd.Parameters.AddWithValue("@Edad", (object?)usuario.Edad_Usuario ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@IdRol", usuario.Rol_Usuario);
 
-                int idNuevo = (int)cmd.ExecuteScalar();
-                return idNuevo;
+                return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
-
-
     }
 }
