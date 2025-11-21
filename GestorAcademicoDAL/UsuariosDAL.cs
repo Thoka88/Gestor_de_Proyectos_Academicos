@@ -102,7 +102,51 @@ namespace GestorAcademicoDAL
             }
 
             return user;
+
         }
+        public static bool ExisteNombreUsuario(string nombreUsuario)
+        {
+            using (SqlConnection con = Conexion.ObtenerConexion())
+            {
+                string query = "SELECT COUNT(1) FROM Usuarios WHERE Nombre_Usuario = @Nombre";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@Nombre", nombreUsuario);
+
+                int count = (int)cmd.ExecuteScalar();
+                return count > 0;
+            }
+        }
+
+        public static int RegistrarUsuario(Usuarios usuario)
+        {
+            using (SqlConnection con = Conexion.ObtenerConexion())
+            {
+                string query = @"
+            INSERT INTO Usuarios
+                (Nombre_Usuario, Apellidos_Usuario, Contrasena_Usuario,
+                 Cedula_Usuario, Correo_Usuario, Telefono_Usuario,
+                 Edad_Usuario, Id_Rol)
+            OUTPUT INSERTED.Id_Usuario
+            VALUES
+                (@Nombre, @Apellidos, @Contrasena,
+                 @Cedula, @Correo, @Telefono,
+                 @Edad, @IdRol)";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@Nombre", usuario.Nombre_Usuario);
+                cmd.Parameters.AddWithValue("@Apellidos", (object?)usuario.Apellidos_Usuario ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Contrasena", usuario.Contrasena_Usuario);
+                cmd.Parameters.AddWithValue("@Cedula", (object?)usuario.Cedula_Usuario ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Correo", (object?)usuario.Correo_Usuario ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Telefono", (object?)usuario.Telefono_Usuario ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Edad", (object?)usuario.Edad_Usuario ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@IdRol", usuario.Rol_Usuario);
+
+                int idNuevo = (int)cmd.ExecuteScalar();
+                return idNuevo;
+            }
+        }
+
 
     }
 }

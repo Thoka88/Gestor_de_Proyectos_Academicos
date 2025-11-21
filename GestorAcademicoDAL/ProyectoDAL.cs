@@ -36,25 +36,90 @@ namespace GestorAcademicoDAL
             }
             return lista;
         }
-
-        public void AgregarProyecto(Proyecto proyecto)
+        public List<Proyecto> ObtenerProyectosPorCursoDeProfesor(int idCurso, int idProfesor)
         {
-            using (SqlConnection conn = Conexion.ObtenerConexion())
+            var lista = new List<Proyecto>();
+
+            using (SqlConnection con = Conexion.ObtenerConexion())
             {
-               
-                string query = @"INSERT INTO Proyectos 
-                    (Nombre_Proyecto, Descripcion_Proyecto, Fecha_Inicio, Fecha_Finalizacion, Estado_Proyecto, Id_Curso)
-                    VALUES (@Nombre, @Descripcion, @Inicio, @Fin, @Estado, @Curso)";
-                SqlCommand cmd = new SqlCommand(query, conn);
+                string query = @"
+                    SELECT  p.Id_Proyecto,
+                            p.Nombre_Proyecto,
+                            p.Descripcion_Proyecto,
+                            p.Fecha_Inicio,
+                            p.Fecha_Finalizacion,
+                            p.Estado_Proyecto,
+                            p.Id_Curso
+                    FROM Proyectos p
+                    INNER JOIN Proyectos_Profesores pp
+                        ON p.Id_Proyecto = pp.Id_Proyecto
+                    WHERE p.Id_Curso = @IdCurso
+                      AND pp.Id_Usuario = @IdProfesor";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@IdCurso", idCurso);
+                cmd.Parameters.AddWithValue("@IdProfesor", idProfesor);
+
+                SqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+                    lista.Add(new Proyecto
+                    {
+                        Id_Proyecto = (int)dr["Id_Proyecto"],
+                        Nombre_Proyecto = dr["Nombre_Proyecto"].ToString(),
+                        Descripcion_Proyecto = dr["Descripcion_Proyecto"].ToString(),
+                        Fecha_Inicio = (DateTime)dr["Fecha_Inicio"],
+                        Fecha_Finalizacion = (DateTime)dr["Fecha_Finalizacion"],
+                        Estado_Proyecto = dr["Estado_Proyecto"].ToString(),
+                        Id_Curso = (int)dr["Id_Curso"]
+                    });
+                }
+            }
+
+            return lista;
+        }
+
+
+        public void AgregarProyecto(Proyecto proyecto, int idProfesor)
+        {
+            using (SqlConnection con = Conexion.ObtenerConexion())
+            {
+                // 1) Insertar proyecto y obtener Id_Proyecto
+                string queryProyecto = @"
+                    INSERT INTO Proyectos
+                        (Nombre_Proyecto, Descripcion_Proyecto,
+                         Fecha_Inicio, Fecha_Finalizacion,
+                         Estado_Proyecto, Id_Curso)
+                    OUTPUT INSERTED.Id_Proyecto
+                    VALUES
+                        (@Nombre, @Descripcion,
+                         @Inicio, @Fin,
+                         @Estado, @IdCurso)";
+
+                SqlCommand cmd = new SqlCommand(queryProyecto, con);
                 cmd.Parameters.AddWithValue("@Nombre", proyecto.Nombre_Proyecto);
-                cmd.Parameters.AddWithValue("@Descripcion", proyecto.Descripcion_Proyecto);
+                cmd.Parameters.AddWithValue("@Descripcion", (object?)proyecto.Descripcion_Proyecto ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Inicio", proyecto.Fecha_Inicio);
                 cmd.Parameters.AddWithValue("@Fin", proyecto.Fecha_Finalizacion);
-                cmd.Parameters.AddWithValue("@Estado", proyecto.Estado_Proyecto);
-                cmd.Parameters.AddWithValue("@Curso", proyecto.Id_Curso);
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.AddWithValue("@Estado", proyecto.Estado_Proyecto ?? "Pendiente");
+                cmd.Parameters.AddWithValue("@IdCurso", proyecto.Id_Curso);
+
+                int idProyecto = (int)cmd.ExecuteScalar();   // 👈 nuevo Id_Proyecto
+
+                // 2) Relacionar profesor con el proyecto en la tabla intermedia
+                string queryPP = @"
+                    INSERT INTO Proyectos_Profesores (Id_Proyecto, Id_Usuario)
+                    VALUES (@IdProyecto, @IdProfesor)";
+
+                SqlCommand cmdPP = new SqlCommand(queryPP, con);
+                cmdPP.Parameters.AddWithValue("@IdProyecto", idProyecto);
+                cmdPP.Parameters.AddWithValue("@IdProfesor", idProfesor);
+
+                cmdPP.ExecuteNonQuery();
             }
         }
+
+
 
         public void EditarProyecto(Proyecto proyecto)
         {

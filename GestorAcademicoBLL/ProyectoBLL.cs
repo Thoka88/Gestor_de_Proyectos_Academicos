@@ -16,14 +16,16 @@ namespace GestorAcademicoBLL
         public List<Proyecto> ObtenerProyectosPorCurso(int idCurso)
             => _dal.ObtenerProyectosPorCurso(idCurso);
 
-        public void AgregarProyecto(Proyecto proyecto)
+        public void AgregarProyecto(Proyecto proyecto, int IdProfesor)
         {
             // ✔️ Paso 2: Valor predeterminado si no viene desde la vista
             if (string.IsNullOrEmpty(proyecto.Estado_Proyecto))
                 proyecto.Estado_Proyecto = "Pendiente";
 
-            _dal.AgregarProyecto(proyecto);
+            _dal.AgregarProyecto(proyecto, IdProfesor);
         }
+        public List<Proyecto> ObtenerProyectosPorCursoDeProfesor(int idCurso, int idProfesor)
+        => _dal.ObtenerProyectosPorCursoDeProfesor(idCurso, idProfesor);
 
         public void EditarProyecto(Proyecto proyecto)
         {
@@ -41,6 +43,7 @@ namespace GestorAcademicoBLL
             => _dal.ObtenerProyectosDeEstudiante(idUsuario, idCurso);
         public Proyecto ObtenerProyectoPorId(int idProyecto)
              => _dal.ObtenerProyectoPorId(idProyecto);
+
 
         // 🔹 Nuevo: obtener estudiantes asignados
         public List<Usuarios> ObtenerEstudiantesPorProyecto(int idProyecto)

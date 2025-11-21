@@ -43,5 +43,21 @@ namespace GestorAcademicoDAL
 
             return cursos;
         }
+        public static void AsignarUsuarioACurso(int idUsuario, int idCurso)
+        {
+            using (SqlConnection con = Conexion.ObtenerConexion())
+            {
+                string query = @"
+                    INSERT INTO Usuarios_Cursos (Id_Curso, Id_Usuario, Descripcion)
+                    VALUES (@IdCurso, @IdUsuario, @Descripcion)";
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@IdCurso", idCurso);
+                cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
+                cmd.Parameters.AddWithValue("@Descripcion", "Se asigna el curso al usuario correspondiente."); 
+
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }
