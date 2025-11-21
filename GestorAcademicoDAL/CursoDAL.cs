@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using GestorAcademicoEntities;
 
@@ -11,9 +12,10 @@ namespace GestorAcademicoDAL
             var lista = new List<Curso>();
 
             using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Cursos_ObtenerTodos", con))
             {
-                string query = "SELECT Id_Curso, Nombre_Curso, Codigo_Curso, Descripcion FROM Cursos";
-                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
                 SqlDataReader dr = cmd.ExecuteReader();
 
                 while (dr.Read())
@@ -32,3 +34,4 @@ namespace GestorAcademicoDAL
         }
     }
 }
+
