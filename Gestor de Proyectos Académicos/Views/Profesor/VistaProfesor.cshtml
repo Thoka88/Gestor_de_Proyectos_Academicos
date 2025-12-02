@@ -3,26 +3,58 @@
 *@
 @model List<GestorAcademicoEntities.Curso>
 
-<h2>Bienvenido profesor @ViewBag.Usuario 👨‍🏫</h2>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script defer src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/profesorjs/profesor.js"></script>
+	<link href="~/css/profesorcss/profesor.css" rel="stylesheet" />
+</head>
 
-<div class="row mt-4">
-    @foreach (var curso in Model)
-    {
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">@curso.NombreCurso</h5>
-                    <p class="card-text mb-1"><i class="bi bi-calendar3"></i> @curso.CodigoCurso</p>
-                    <p class="card-text mb-1"><i class="bi bi-building"></i> Aula: @curso.Descripcion</p>
-                    <a asp-controller="ProyectoProfesor"
-                       asp-action="VistaProyectosProfesor"
-                       asp-route-idCurso="@curso.Id_Curso"
-                       class="btn btn-outline-primary btn-sm">
-                        Ingresar →
-                    </a>
+
+
+<h2 style="color:white">
+    Bienvenido profesor @ViewBag.Usuario 👨‍🏫
+</h2>
+
+<body class="fondo-Prof">
+
+    <div class="row mt-4">
+
+        @foreach (var curso in Model)
+        {
+            <div class="col-md-5 mb-4 ColorCard">
+
+                <div>
+
+                    <div class="InfoBox">
+
+                        <h5 class="card-title fw-bold">
+                            @curso.NombreCurso
+                        </h5>
+
+                        <p class="card-text mb-1 curso-detalle">
+                            <i class="bi bi-calendar3"></i>
+                            @curso.CodigoCurso
+                        </p>
+
+                        <p class="card-text mb-1 ">
+                            <i class="bi bi-building"></i>
+                            Aula: @curso.Descripcion
+                        </p>
+
+                        <a asp-controller="ProyectoProfesor"
+                           asp-action="VistaProyectosProfesor"
+                           asp-route-idCurso="@curso.Id_Curso"
+                           class="btn BtnProf">
+                            Ingresar →
+                        </a>
+
+                    </div>
+
                 </div>
-            </div>
-        </div>
-    }
-</div>
 
+            </div>
+        }
+
+    </div>
+</body>
