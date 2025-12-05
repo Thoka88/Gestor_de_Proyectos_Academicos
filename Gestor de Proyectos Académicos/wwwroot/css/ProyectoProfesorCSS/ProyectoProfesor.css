@@ -1,9 +1,4 @@
 ﻿body {
-    background-image: url('../../resources/proyectoprofesor/vistaproprof.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
 }
 
 .fondo-vistaProf {
@@ -14,22 +9,7 @@
     height: 100vh;
 }
 
-.ColorCard {
-    background: rgba(120, 120, 120, 1);
-    color: #fff;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 0 25px rgba(0, 0, 0, .25);
-    margin-right: 24px;
-}
-
-.InfoBox {
-    background: rgba(120, 120, 120, 1);
-    color: #fff;
-    padding: 1rem;
-}
-
-.BtnProf {
+.BtnProy {
     font-size: 18px;
     color: #e1e1e1;
     font-family: inherit;
@@ -44,18 +24,18 @@
     transition-property: color;
 }
 
-    .BtnProf:focus,
-    .BtnProf:hover {
+    .BtnProy:focus,
+    .BtnProy:hover {
         color: #fff;
     }
 
-        .BtnProf:focus:after,
-        .BtnProf:hover:after {
+        .BtnProy:focus:after,
+        .BtnProy:hover:after {
             width: 100%;
             left: 0%;
         }
 
-    .BtnProf:after {
+    .BtnProy:after {
         content: "";
         pointer-events: none;
         bottom: -2px;
@@ -68,3 +48,138 @@
         transition-duration: 400ms;
         transition-property: width, left;
     }
+
+.BtnProyElim {
+    font-size: 18px;
+    color: #ff4d4d; /* rojo claro para el texto normal */
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: color;
+}
+
+    .BtnProyElim:focus,
+    .BtnProyElim:hover {
+        color: #ff0000; /* rojo fuerte al pasar el mouse */
+    }
+
+        .BtnProyElim:focus:after,
+        .BtnProyElim:hover:after {
+            width: 100%;
+            left: 0%;
+        }
+
+    .BtnProyElim:after {
+        content: "";
+        pointer-events: none;
+        bottom: -2px;
+        left: 50%;
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: #ff0000; /* línea roja */
+        transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition-duration: 400ms;
+        transition-property: width, left;
+    }
+
+.BtnProyNig {
+    font-size: 18px;
+    color: dimgray;
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: color;
+}
+
+    .BtnProyNig:focus,
+    .BtnProyNig:hover {
+        color: black;
+    }
+
+        .BtnProyNig:focus:after,
+        .BtnProyNig:hover:after {
+            width: 100%;
+            left: 0%;
+        }
+
+    .BtnProyNig:after {
+        content: "";
+        pointer-events: none;
+        bottom: -2px;
+        left: 50%;
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: black;
+        transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition-duration: 400ms;
+        transition-property: width, left;
+    }
+
+.Textbox {
+    position: relative;
+    margin: 50px auto;
+    width: 200px;
+}
+
+    .Textbox input {
+        font-size: 20px;
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        padding: 5px 0;
+        background-color: transparent;
+        outline: none;
+        color: white;
+    }
+
+    .Textbox .label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #ccc;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .Textbox input:focus ~ .label,
+    .Textbox input:valid ~ .label {
+        top: -20px;
+        font-size: 16px;
+        color: #fff;
+    }
+
+    .Textbox .underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background-color: #fff;
+        transform: scaleX(0);
+        transition: all 0.3s ease;
+    }
+
+    .Textbox input:focus ~ .underline,
+    .Textbox input:valid ~ .underline {
+        transform: scaleX(1);
+    }
+
+.fijoArriba .label {
+    top: -20px; /* la mueve arriba */
+    font-size: 14px;
+    color: #777; /* opcional */
+}
