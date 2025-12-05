@@ -23,17 +23,26 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
             {
                 HttpContext.Session.SetString("Usuario", user.Nombre_Usuario);
                 HttpContext.Session.SetString("Rol", user.Rol_Usuario);
-                HttpContext.Session.SetInt32("IdUsuario", user.Id_Usuario); 
+                HttpContext.Session.SetInt32("IdUsuario", user.Id_Usuario);
+
+                string urlDestino = "";
 
                 if (user.Rol_Usuario == "Profesor")
-                    return RedirectToAction("VistaProfesor", "Profesor");
+                    urlDestino = Url.Action("VistaProfesor", "Profesor");
                 else if (user.Rol_Usuario == "Estudiante")
-                    return RedirectToAction("VistaEstudiante", "Estudiante");
+                    urlDestino = Url.Action("VistaEstudiante", "Estudiante");
                 else
-                    return RedirectToAction("Index", "Home");
+                    urlDestino = Url.Action("Index", "Home");
+
+                // Indicamos que fue exitoso y hacia dónde debe redirigir el JS
+                ViewBag.LoginExitoso = true;
+                ViewBag.RedirectUrl = urlDestino;
+
+                return View(); // ← Volvemos a Login para mostrar el Swal de éxito
             }
 
-            ViewBag.Error = "Usuario o contraseña incorrectos.";
+            // 🔴 Fallo
+            ViewBag.Error = "Crendenciales incorrectas.";
             return View();
         }
         [HttpGet]
