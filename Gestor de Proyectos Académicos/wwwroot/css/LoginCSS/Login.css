@@ -1,6 +1,7 @@
 ﻿body {
     background: url('../../recursos/FondoLiso.svg') no-repeat center center fixed;
     background-size: cover;
+    background-attachment: fixed;
     height: 100vh
 }
 
