@@ -19,44 +19,39 @@
 <body class="fondo-vistaProf">
     <div>
 
-        <!-- Formulario para agregar proyecto -->
         <form asp-action="AgregarProyecto" method="post" class="mb-4 formulario-proyecto">
             <input type="hidden" name="Id_Curso" value="@ViewBag.IdCurso" />
 
             <div class="row g-2 align-items-center formulario-proyecto-row">
 
-                <div class="col-md-3 campo-proyecto">
-                    <input name="Nombre_Proyecto"
-                           class="form-control"
-                           placeholder="Nombre del proyecto"
-                           required />
+                <div class="Textbox mb-3">
+                    <input type="text" id="nombreProyecto" name="Nombre_Proyecto" required>
+                    <label for="nombreProyecto" class="label">Nombre del proyecto</label>
+                    <div class="underline"></div>
                 </div>
 
-                <div class="col-md-3 campo-proyecto">
-                    <input name="Descripcion_Proyecto"
-                           class="form-control"
-                           placeholder="Descripción"
-                           required />
+                <div class="Textbox mb-3">
+                    <input type="text" id="descripcionProyecto" name="Descripcion_Proyecto" required>
+                    <label for="descripcionProyecto" class="label">Descripción</label>
+                    <div class="underline"></div>
                 </div>
 
-                <div class="col-md-2 campo-proyecto">
-                    <input type="date"
-                           name="Fecha_Inicio"
-                           class="form-control"
-                           required />
+                <div class="Textbox mb-3 fijoArriba">
+                    <input type="date" id="fechaInicio" name="Fecha_Inicio" required>
+                    <label for="fechaInicio" class="label">Fecha de inicio</label>
+                    <div class="underline"></div>
                 </div>
 
-                <div class="col-md-2 campo-proyecto">
-                    <input type="date"
-                           name="Fecha_Finalizacion"
-                           class="form-control"
-                           required />
+                <div class="Textbox mb-3 fijoArriba">
+                    <input type="date" id="fechaFinalizacion" name="Fecha_Finalizacion" required>
+                    <label for="fechaFinalizacion" class="label">Fecha de finalización</label>
+                    <div class="underline"></div>
                 </div>
 
                 <div class="col-md-2 campo-proyecto">
                     <button type="submit"
-                            class="btn btn-success w-100 btn-agregar-proyecto">
-                        <i class="bi bi-plus-circle"></i> Agregar
+                            class="btn BtnProyVerd">
+                             Agregar
                     </button>
                 </div>
 
@@ -66,7 +61,7 @@
 
         @if (Model != null && Model.Any())
         {
-            <table class="table table-striped table-bordered align-middle shadow-sm tabla-proyectos">
+            <table class="table table-light table-hover table-striped table-bordered align-middle shadow-sm">
                 <thead class="table-primary">
                     <tr>
                         <th>Nombre</th>
@@ -92,15 +87,15 @@
                                 <a asp-action="ReporteProyecto"
                                    asp-route-idProyecto="@p.Id_Proyecto"
                                    asp-route-idCurso="@ViewBag.IdCurso"
-                                   class="btn btn-info btn-sm me-2 btn-reporte">
-                                    <i class="bi bi-bar-chart"></i> Ver reporte
+                                   class="btn BtnProyNig">
+                                   Ver reporte
                                 </a>
 
                                 <a asp-action="DetalleProyecto"
                                    asp-route-idProyecto="@p.Id_Proyecto"
                                    asp-route-idCurso="@ViewBag.IdCurso"
-                                   class="btn btn-info btn-sm btn-estudiantes">
-                                    <i class="bi bi-people"></i> Ver estudiantes
+                                   class="btn BtnProyNig">
+                                   Ver estudiantes
                                 </a>
 
                                 <form asp-action="EliminarProyecto"
@@ -110,8 +105,8 @@
                                     <input type="hidden" name="idCurso" value="@ViewBag.IdCurso" />
 
                                     <button type="submit"
-                                            class="btn btn-danger btn-sm btn-eliminar">
-                                        <i class="bi bi-trash"></i> Eliminar
+                                            class="btn BtnProyElim">
+                                             Eliminar
                                     </button>
                                 </form>
 
@@ -129,10 +124,11 @@
             </div>
         }
 
-        <a asp-controller="Profesor"
+		<a 
+           asp-controller="Profesor"
            asp-action="VistaProfesor"
-           class="btn btn-outline-secondary mt-3 btn-volver">
-            <i class="bi bi-arrow-left"></i> Volver a mis cursos
+		   class="btn BtnProy">
+            Volver a mis cursos
         </a>
 
     </div>
