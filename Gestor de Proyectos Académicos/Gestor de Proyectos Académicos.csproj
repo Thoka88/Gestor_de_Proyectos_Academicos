@@ -10,7 +10,6 @@
   <ItemGroup>
     <Folder Include="wwwroot\Resources\Home\" />
     <Folder Include="wwwroot\Resources\Shared\" />
-    <Folder Include="wwwroot\Resources\ProyectoProfesor\" />
     <Folder Include="wwwroot\Resources\Profesor\" />
   </ItemGroup>
 
