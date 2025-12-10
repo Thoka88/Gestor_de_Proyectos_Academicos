@@ -1,0 +1,344 @@
+﻿body {
+}
+
+.fondoRepPer {
+    background-image: url('../../resources/proyectoestudiante/reportepersonal.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+}
+
+.BtnRepPro {
+    font-size: 18px;
+    color: #e1e1e1;
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: color;
+}
+
+    .BtnRepPro:focus,
+    .BtnRepPro:hover {
+        color: #fff;
+    }
+
+        .BtnRepPro:focus:after,
+        .BtnRepPro:hover:after {
+            width: 100%;
+            left: 0%;
+        }
+
+    .BtnRepPro:after {
+        content: "";
+        pointer-events: none;
+        bottom: -2px;
+        left: 50%;
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: #fff;
+        transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition-duration: 400ms;
+        transition-property: width, left;
+    }
+
+.BtnElim {
+    font-size: 18px;
+    color: #ff4d4d;
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: color;
+}
+
+    .BtnElim:focus,
+    .BtnElim:hover {
+        color: #ff0000;
+    }
+
+        .BtnElim:focus:after,
+        .BtnElim:hover:after {
+            width: 100%;
+            left: 0%;
+        }
+
+    .BtnElim:after {
+        content: "";
+        pointer-events: none;
+        bottom: -2px;
+        left: 50%;
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: #ff0000;
+        transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition-duration: 400ms;
+        transition-property: width, left;
+    }
+
+.BtnProyNig {
+    font-size: 18px;
+    color: dimgray;
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: color;
+}
+
+    .BtnProyNig:focus,
+    .BtnProyNig:hover {
+        color: black;
+    }
+
+        .BtnProyNig:focus:after,
+        .BtnProyNig:hover:after {
+            width: 100%;
+            left: 0%;
+        }
+
+    .BtnProyNig:after {
+        content: "";
+        pointer-events: none;
+        bottom: -2px;
+        left: 50%;
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: black;
+        transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition-duration: 400ms;
+        transition-property: width, left;
+    }
+
+.BtnProyVerd {
+    font-size: 18px;
+    color: #2ecc71;
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: color;
+}
+
+    .BtnProyVerd:focus,
+    .BtnProyVerd:hover {
+        color: #27ae60;
+    }
+
+        .BtnProyVerd:focus:after,
+        .BtnProyVerd:hover:after {
+            width: 100%;
+            left: 0%;
+        }
+
+    .BtnProyVerd:after {
+        content: "";
+        pointer-events: none;
+        bottom: -2px;
+        left: 50%;
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: #27ae60;
+        transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition-duration: 400ms;
+        transition-property: width, left;
+    }
+
+
+.Textbox {
+    position: relative;
+    width: 100%;
+    margin: 20px 0;
+}
+
+    .Textbox input {
+        font-size: 20px;
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        padding: 5px 0;
+        background-color: transparent;
+        outline: none;
+        color: white;
+    }
+
+    .Textbox .label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #ccc;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .Textbox input:focus ~ .label,
+    .Textbox input:valid ~ .label {
+        top: -20px;
+        font-size: 16px;
+        color: #fff;
+    }
+
+    .Textbox .underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background-color: #fff;
+        transform: scaleX(0);
+        transition: all 0.3s ease;
+    }
+
+    .Textbox input:focus ~ .underline,
+    .Textbox input:valid ~ .underline {
+        transform: scaleX(1);
+    }
+
+/* ===== CONTENEDOR ===== */
+.TextBoxArea {
+    position: relative;
+    width: 100%;
+    margin: 20px 0;
+}
+
+    /* ===== TEXTAREA ===== */
+    .TextBoxArea textarea {
+        font-size: 20px;
+        width: 100%;
+        border: none;
+        border-bottom: none !important; /* elimina borde fantasma */
+        box-shadow: none !important; /* elimina la línea de Bootstrap */
+        padding: 5px 0 4px 0; /* deja espacio para la línea */
+        background-color: transparent;
+        outline: none;
+        color: white;
+        resize: none;
+        position: relative;
+        z-index: 2; /* arriba de la línea */
+    }
+
+    /* ===== LABEL ===== */
+    .TextBoxArea .label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #ccc;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .TextBoxArea textarea:focus ~ .label,
+    .TextBoxArea textarea:valid ~ .label {
+        top: -20px;
+        font-size: 16px;
+        color: #fff;
+    }
+
+    /* ===== LÍNEA BASE ===== */
+    .TextBoxArea .underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background-color: #ccc; /* línea gris */
+        z-index: 0;
+    }
+
+        /* ===== LÍNEA ANIMADA ===== */
+        .TextBoxArea .underline::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 2px;
+            width: 100%;
+            background-color: #fff; /* línea blanca animada */
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: 0.3s;
+            z-index: 1;
+        }
+
+    /* Activación del efecto blanco */
+    .TextBoxArea textarea:focus ~ .underline::after,
+    .TextBoxArea textarea:valid ~ .underline::after {
+        transform: scaleX(1);
+    }
+
+.fijoArriba .label {
+    top: -20px;
+    font-size: 14px;
+    color: #bbb;
+}
+
+.ColorCard {
+    background: rgba(120, 120, 120, 1);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, .25);
+    margin-right: 24px;
+}
+
+.InfoBox {
+    background: rgba(120, 120, 120, 1);
+    color: #fff;
+    padding: 1rem;
+}
+
+/* Contenedor opcional */
+.dropdown {
+    width: 250px;
+}
+
+    /* Estilo básico del select */
+    .dropdown select {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 16px;
+        background: #1e1e1e; /* fondo */
+        color: #fff; /* texto */
+
+        border: 1px solid #444;
+        border-radius: 6px;
+        outline: none;
+        cursor: pointer;
+        /* Elimina la flecha por defecto (en la mayoría de navegadores) */
+        appearance: none;
+    }
+
+        /* Hover y focus */
+        .dropdown select:hover {
+            border-color: #666;
+        }
+
+        .dropdown select:focus {
+            border-color: #00aaff;
+        }

@@ -19,7 +19,7 @@
             Proyectos del curso: @ViewBag.NombreCurso
         </h2>
 
-        <!-- FORMULARIO PARA AGREGAR PROYECTO -->
+
         <div class="ColorCard mb-4">
             <div>
                 <h4>Agregar nuevo proyecto</h4>
@@ -67,7 +67,7 @@
 
         <hr class="text-white" />
 
-        <!-- LISTA DE PROYECTOS -->
+
         @if (Model != null && Model.Any())
         {
             <div class="row mt-4">
@@ -107,9 +107,8 @@
             </div>
         }
 
-        <!-- BOTÓN VOLVER -->
-        <a asp-controller="Profesor"
-           asp-action="VistaProfesor"
+        <a asp-controller="Estudiante"
+           asp-action="VistaEstudiante"
            class="btn BtnProy">
             Volver a mis cursos
         </a>
