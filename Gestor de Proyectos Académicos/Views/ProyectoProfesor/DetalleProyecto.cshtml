@@ -5,9 +5,11 @@
 }
 
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script defer src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/proyectoprofesorjs/detalleproyectoprof.js"></script>
+	<script src="~/js/ProyectoProfesorJS/DetalleProyectoProf.js"></script>
+    <script src="~/js/ProyectoProfesorJS/DetalleProyectoProf"></script>
 	<link href="~/css/proyectoprofesorcss/detalleproyectoprof.css" rel="stylesheet" />
 </head>
 
@@ -16,7 +18,7 @@
     <div class="container mt-4">
 
         <h2 style="color: white">Proyecto: @Model.NombreProyecto</h2>
-        <h5 class="text-muted">Curso ID: @Model.IdCurso</h5>
+        <h5 class="text-muted">Codigo de Curso: @Model.CodigoCurso</h5>
         <hr />
 
         <div class="ColorCard">
@@ -92,7 +94,7 @@
                                         Asignar tarea
                                     </a>
 
-                                    <form asp-action="EliminarEstudianteProyecto" method="post" style="display:inline;">
+                                    <form asp-action="EliminarEstudianteProyecto" method="post" class="form-eliminar-estudiante" style="display:inline;">
                                         <input type="hidden" name="idProyecto" value="@Model.IdProyecto" />
                                         <input type="hidden" name="idCurso" value="@Model.IdCurso" />
                                         <input type="hidden" name="idUsuario" value="@est.Id_Usuario" />
@@ -123,3 +125,15 @@
     </div>
 
 </body>
+@if (TempData["TareaCreada"] != null)
+{
+    <script>
+        AlertaTareaCreada();
+    </script>
+}
+@if (TempData["EstudianteAgregado"] != null)
+{
+    <script>
+        AlertaEstudianteAsignado();
+    </script>
+}

@@ -108,5 +108,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
             TempData["Mensaje"] = "Registro completado. Ahora podés iniciar sesión.";
             return RedirectToAction("Login");
         }
+
     }
+
 }

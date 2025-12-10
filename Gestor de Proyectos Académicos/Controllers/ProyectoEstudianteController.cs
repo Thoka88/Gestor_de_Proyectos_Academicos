@@ -9,6 +9,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
     {
         private readonly ProyectoBLL _proyectoBLL = new ProyectoBLL();
         private readonly TareaBLL _tareaBLL = new TareaBLL();
+        private readonly CursoBLL _cursoBLL = new CursoBLL();
 
         // ✅ Vista principal: proyectos donde el estudiante participa
         public IActionResult VistaProyectosEstudiante(int idCurso)
@@ -20,8 +21,10 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
                 return RedirectToAction("Login", "Login");
 
             var proyectos = _proyectoBLL.ObtenerProyectosDeEstudiante(idUsuario.Value, idCurso);
+            var curso = _cursoBLL.ObtenerCursoPorId(idCurso);
+
             ViewBag.IdCurso = idCurso;
-            ViewBag.NombreCurso = "Nombre del curso"; // opcional
+            ViewBag.NombreCurso = curso?.NombreCurso ?? "Sin nombre";
             return View("VistaProyectosEstudiante", proyectos);
         }
 
@@ -53,6 +56,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
 
             tarea.Id_Usuario = idUsuario.Value;
             _tareaBLL.AgregarTarea(tarea);
+            TempData["TareaCreada"] = true;
             return RedirectToAction("DetalleProyecto", new { idProyecto = tarea.Id_Proyecto, idCurso });
         }
 
@@ -70,6 +74,8 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
                 tarea.Fecha_Finalizacion = DateTime.Now.AddDays(7);
 
             _tareaBLL.EditarTarea(tarea);
+            TempData["EstadoActualizado"] = true;
+           
             return RedirectToAction("DetalleProyecto", new { idProyecto = tarea.Id_Proyecto, idCurso });
         }
 
@@ -82,6 +88,8 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
                 return RedirectToAction("Login", "Login");
 
             _tareaBLL.EliminarTarea(idTarea);
+            TempData["TareaEliminada"] = true;
+
             return RedirectToAction("DetalleProyecto", new { idProyecto, idCurso });
         }
 

@@ -32,6 +32,32 @@ namespace GestorAcademicoDAL
 
             return lista;
         }
+        public static Curso ObtenerCursoPorId(int idCurso)
+        {
+            Curso curso = null;
+
+            using (SqlConnection con = Conexion.ObtenerConexion())
+            using (SqlCommand cmd = new SqlCommand("sp_Curso_ObtenerPorId", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@IdCurso", idCurso);
+
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    curso = new Curso
+                    {
+                        Id_Curso = (int)dr["Id_Curso"],
+                        NombreCurso = dr["Nombre_Curso"].ToString(),
+                        CodigoCurso = dr["Codigo_Curso"].ToString(),
+                        Descripcion = dr["Descripcion"].ToString()
+                    };
+                }
+            }
+
+            return curso;
+        }
     }
+
 }
 

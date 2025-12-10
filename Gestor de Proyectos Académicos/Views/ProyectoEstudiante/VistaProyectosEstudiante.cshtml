@@ -13,60 +13,12 @@
 
 <body class="fondo-vistaEst">
 
+
     <div class="container mt-4">
 
         <h2 class="text-white mb-4">
             Proyectos del curso: @ViewBag.NombreCurso
         </h2>
-
-
-        <div class="ColorCard mb-4">
-            <div>
-                <h4>Agregar nuevo proyecto</h4>
-
-                <form asp-action="AgregarProyecto" method="post">
-                    <input type="hidden" name="Id_Curso" value="@ViewBag.IdCurso" />
-
-                    <div class="row g-3">
-
-                        <div class="Textbox col-md-6">
-                            <input type="text" id="nombreProyecto" name="Nombre_Proyecto" required>
-                            <label for="nombreProyecto" class="label">Nombre del proyecto</label>
-                            <div class="underline"></div>
-                        </div>
-
-                        <div class="Textbox col-md-6">
-                            <input type="text" id="descripcionProyecto" name="Descripcion_Proyecto" required>
-                            <label for="descripcionProyecto" class="label">Descripción</label>
-                            <div class="underline"></div>
-                        </div>
-
-                        <div class="Textbox col-md-6 fijoArriba">
-                            <input type="date" id="fechaInicio" name="Fecha_Inicio" required>
-                            <label for="fechaInicio" class="label">Fecha de inicio</label>
-                            <div class="underline"></div>
-                        </div>
-
-                        <div class="Textbox col-md-6 fijoArriba">
-                            <input type="date" id="fechaFinal" name="Fecha_Finalizacion" required>
-                            <label for="fechaFinal" class="label">Fecha de finalización</label>
-                            <div class="underline"></div>
-                        </div>
-
-
-                    </div>
-
-                    <button type="submit"
-                            class="btn BtnProyVerd">
-                        Agregar proyecto
-                    </button>
-
-                </form>
-            </div>
-        </div>
-
-        <hr class="text-white" />
-
 
         @if (Model != null && Model.Any())
         {
