@@ -1,74 +1,84 @@
 ﻿@model Gestor_de_Proyectos_Académicos.Models.ReporteProyectoViewModel
 
-<div class="container mt-4">
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script defer src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/proyectoprofesorjs/reporteproyecto.js"></script>
+    <link href="~/css/proyectoprofesorcss/reporteproyecto.css" rel="stylesheet" />
+</head>
 
-    <h2>Reporte del Proyecto</h2>
-    <h4 class="text-muted">@Model.NombreProyecto</h4>
-    <hr />
+<body class="fondoRep">
 
-    <h5>Avance general del proyecto</h5>
+    <div class="container mt-4">
 
-    @{
-        string clase = Model.PorcentajeGeneral switch
-        {
-            >= 80 => "bg-success",
-            >= 50 => "bg-warning",
-            _ => "bg-danger"
-        };
-    }
+        <h2 style="color:white">Reporte del Proyecto</h2>
+        <h4 class="text-muted" style="color: white">@Model.NombreProyecto</h4>
+        <hr />
 
-    <div class="progress mb-4">
-        <div class="progress-bar @clase"
-             role="progressbar"
-             style="width:@Model.PorcentajeGeneral%">
-            @Model.PorcentajeGeneral.ToString("0.0")%
+        <h5 style="color:white">Avance general del proyecto</h5>
+
+        @{
+            string clase = Model.PorcentajeGeneral switch
+            {
+                >= 80 => "bg-success",
+                >= 50 => "bg-warning",
+                _ => "bg-danger"
+            };
+        }
+
+        <div class="progress mb-4">
+            <div class="progress-bar @clase"
+                 role="progressbar"
+                 style="width:@($"{Model.PorcentajeGeneral}%")">
+                @Model.PorcentajeGeneral.ToString("0.0")%
+            </div>
         </div>
+
+        <h5 style="color:white">Avance por estudiante</h5>
+
+        <table class="table table-light table-striped table-bordered align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>Estudiante</th>
+                    <th>Tareas</th>
+                    <th>Completadas</th>
+                    <th>Avance</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var est in Model.Estudiantes)
+                {
+                    string claseEst = est.Porcentaje switch
+                    {
+                        >= 80 => "bg-success",
+                        >= 50 => "bg-warning",
+                        _ => "bg-danger"
+                    };
+
+                    <tr>
+                        <td>@est.Nombre</td>
+                        <td>@est.TotalTareas</td>
+                        <td>@est.Completadas</td>
+                        <td style="width:40%">
+                            <div class="progress">
+                                <div class="progress-bar @claseEst"
+                                     style="width:@($"{est.Porcentaje}%")">
+                                    @est.Porcentaje.ToString("0.0")%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <a asp-action="VistaProyectosProfesor"
+           asp-route-idCurso="@Model.IdCurso"
+           class="btn BtnRepPro">
+            Volver a proyectos
+        </a>
+
     </div>
 
-    <h5>Avance por estudiante</h5>
-
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Estudiante</th>
-                <th>Tareas</th>
-                <th>Completadas</th>
-                <th>Avance</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var est in Model.Estudiantes)
-            {
-                string claseEst = est.Porcentaje switch
-                {
-                    >= 80 => "bg-success",
-                    >= 50 => "bg-warning",
-                    _ => "bg-danger"
-                };
-
-                <tr>
-                    <td>@est.Nombre</td>
-                    <td>@est.TotalTareas</td>
-                    <td>@est.Completadas</td>
-                    <td style="width:40%">
-                        <div class="progress">
-                            <div class="progress-bar @claseEst"
-                                 style="width:@est.Porcentaje%">
-                                @est.Porcentaje.ToString("0.0")%
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <a asp-action="VistaProyectosProfesor"
-       asp-route-idCurso="@Model.IdCurso"
-       class="btn btn-outline-secondary mt-3">
-        Volver a proyectos
-    </a>
-
-</div>
-
+</body>
