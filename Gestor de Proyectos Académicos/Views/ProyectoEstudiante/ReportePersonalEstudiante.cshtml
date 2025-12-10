@@ -4,96 +4,106 @@
     ViewData["Title"] = "Mi avance por proyecto";
 }
 
-<div class="container mt-4">
-    <h2>Mi avance en los proyectos</h2>
-    <hr />
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script defer src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/proyectoestudiantejs/reportepersonal.js"></script>
+	<link href="~/css/proyectoprofesorcss/reportepersonal.css" rel="stylesheet" />
+</head>
 
-    @if (Model.Proyectos != null && Model.Proyectos.Any())
-    {
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Proyecto</th>
-                    <th>Total de tareas</th>
-                    <th>Completadas</th>
-                    <th>Avance</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var p in Model.Proyectos)
-                {
-                    string clase = p.Porcentaje switch
+
+<body class="fondoRepPer">
+
+    <div class="container mt-4">
+        <h2 style="color: white">Mi avance en los proyectos</h2>
+        <hr />
+
+        @if (Model.Proyectos != null && Model.Proyectos.Any())
+        {
+            <table class="table table-light table-striped table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Proyecto</th>
+                        <th>Total de tareas</th>
+                        <th>Completadas</th>
+                        <th>Avance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Proyectos)
                     {
-                        >= 80 => "bg-success",
-                        >= 50 => "bg-warning",
-                        _ => "bg-danger"
-                    };
+                        string clase = p.Porcentaje switch
+                        {
+                            >= 80 => "bg-success",
+                            >= 50 => "bg-warning",
+                            _ => "bg-danger"
+                        };
 
-                    <!-- RESUMEN DEL PROYECTO -->
-                    <tr>
-                        <td>@p.NombreProyecto</td>
-                        <td>@p.TotalTareas</td>
-                        <td>@p.TareasCompletadas</td>
-                        <td style="width:40%">
-                            <div class="progress">
-                                <div class="progress-bar @clase"
-                                     role="progressbar"
-                                     style="width:@p.Porcentaje%">
-                                    @p.Porcentaje.ToString("0.0")%
+                        <tr>
+                            <td>@p.NombreProyecto</td>
+                            <td>@p.TotalTareas</td>
+                            <td>@p.TareasCompletadas</td>
+                            <td style="width:40%">
+                                <div class="progress">
+                                    <div class="progress-bar @clase"
+                                         role="progressbar"
+                                         style="width:@($"{p.Porcentaje}%")">
+                                        @p.Porcentaje.ToString("0.0")%
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
 
-                    <!-- 🔥 LISTA DE TAREAS -->
-                    <tr>
-                        <td colspan="4">
+                        
+                        <tr>
+                            <td colspan="4">
 
-                            <strong>Tareas en este proyecto:</strong>
+                                <strong>Tareas en este proyecto:</strong>
 
-                            @if (p.Tareas != null && p.Tareas.Any())
-                            {
-                                <ul class="list-group mt-2">
-                                    @foreach (var t in p.Tareas)
-                                    {
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <div>
-                                                <strong>@t.Titulo_Tarea</strong><br />
-                                                <small>@t.Descripcion_Tarea</small>
-                                            </div>
+                                @if (p.Tareas != null && p.Tareas.Any())
+                                {
+                                    <ul class="list-group mt-2">
+                                        @foreach (var t in p.Tareas)
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <div>
+                                                    <strong>@t.Titulo_Tarea</strong><br />
+                                                    <small>@t.Descripcion_Tarea</small>
+                                                </div>
 
-                                            <span class="badge
-                                                @(t.Estado_Tarea == "Completada" ? "bg-success" :
-                                                                                    t.Estado_Tarea == "En progreso" ? "bg-warning" : "bg-secondary")">
-                                @t.Estado_Tarea
-                            </span>
-                        </li>
-                                                }
-                                </ul>
-                            }
-                            else
-                            {
-                                <p class="text-muted mt-2">No has creado tareas en este proyecto.</p>
-                            }
+                                                <span class="badge
+                                                                    @(t.Estado_Tarea == "Completada" ? "bg-success" :
+                                                                                                                                              t.Estado_Tarea == "En progreso" ? "bg-warning" : "bg-secondary")">
+                                    @t.Estado_Tarea
+                                </span>
+                            </li>
+                                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted mt-2">No has creado tareas en este proyecto.</p>
+                                }
 
-                        </td>
-                    </tr>
-                }
+                            </td>
+                        </tr>
+                    }
 
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="alert alert-info">
-            No tenés proyectos con tareas todavía en este curso.
-        </div>
-    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No tenés proyectos con tareas todavía en este curso.
+            </div>
+        }
 
-    <a asp-action="VistaProyectosEstudiante"
-       asp-route-idCurso="@Model.IdCurso"
-       class="btn btn-outline-secondary mt-3">
-        Volver a mis proyectos
-    </a>
-</div>
+        <a asp-action="VistaProyectosEstudiante"
+           asp-route-idCurso="@Model.IdCurso"
+           class="btn BtnRepPro">
+            Volver a mis proyectos
+        </a>
+    </div>
 
+</body>
