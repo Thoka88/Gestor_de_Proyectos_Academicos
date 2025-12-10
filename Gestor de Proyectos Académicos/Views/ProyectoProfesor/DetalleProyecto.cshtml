@@ -83,6 +83,14 @@
                                        class="btn BtnProyNig">
                                         Ver tareas
                                     </a>
+                                    <a asp-action="CrearTareaEnProyecto"
+                                       asp-controller="ProyectoProfesor"
+                                       asp-route-idProyecto="@Model.IdProyecto"
+                                       asp-route-idCurso="@Model.IdCurso"
+                                       asp-route-idUsuario="@est.Id_Usuario"
+                                       class="btn btn-sm btn-success me-1">
+                                        Asignar tarea
+                                    </a>
 
                                     <form asp-action="EliminarEstudianteProyecto" method="post" style="display:inline;">
                                         <input type="hidden" name="idProyecto" value="@Model.IdProyecto" />
