@@ -7,9 +7,10 @@
 }
 
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script defer src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/proyectoestudiantejs/detalleproyectoest.js"></script>
+	<script src="~/js/ProyectoEstudianteJS/DetalleProyectoEst.js"></script>
 	<link href="~/css/proyectoestudiantecss/detalleproyectoest.css" rel="stylesheet" />
 </head>
 
@@ -114,7 +115,10 @@
                                         </form>
 
                                         
-                                        <form asp-action="EliminarTarea" method="post" style="display:inline;">
+                                        <form asp-action="EliminarTarea" 
+                                            method="post" 
+                                            class="form-eliminar-tarea"
+                                            style="display:inline;">
                                             <input type="hidden" name="idTarea" value="@t.Id_Tarea" />
                                             <input type="hidden" name="idProyecto" value="@t.Id_Proyecto" />
                                             <input type="hidden" name="idCurso" value="@idCurso" />
@@ -149,3 +153,15 @@
     </div>
 
 </body>
+@if (TempData["EstadoActualizado"] != null)
+{
+    <script>
+        AlertaEstadoActualizado();
+    </script>
+}
+@if (TempData["TareaCreada"] != null)
+{
+    <script>
+        AlertaTareaCreada();
+    </script>
+}

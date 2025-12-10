@@ -10,7 +10,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
         private readonly ProyectoBLL _proyectoBLL = new ProyectoBLL();
         private readonly UsuarioBLL _usuarioBLL = new UsuarioBLL();
         private readonly TareaBLL _tareaBLL = new TareaBLL();
-
+        private readonly CursoBLL _cursoBLL = new CursoBLL();
 
 
         // ✅ Vista principal: lista de proyectos del curso
@@ -24,8 +24,11 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
 
             var proyectos = _proyectoBLL.ObtenerProyectosPorCursoDeProfesor(idCurso, idProfesor.Value);
 
+            // 🔹 Aquí traemos el curso de la BD
+            var curso = _cursoBLL.ObtenerCursoPorId(idCurso);
+
             ViewBag.IdCurso = idCurso;
-            ViewBag.NombreCurso = "Nombre del curso"; // si luego lo cargás desde BD, mejor
+            ViewBag.NombreCurso = curso?.NombreCurso ?? "Sin nombre";
 
             return View("VistaProyectosProfesor", proyectos);
         }
@@ -53,6 +56,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
 
             _proyectoBLL.AgregarProyecto(proyecto, idProfesor.Value);
 
+            TempData["ProyectoAgregado"] = true;
             return RedirectToAction("VistaProyectosProfesor", new { idCurso = proyecto.Id_Curso });
         }
 
@@ -91,6 +95,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
                 return RedirectToAction("DetalleProyecto", new { idProyecto, idCurso });
 
             _proyectoBLL.AsignarEstudianteAProyecto(idProyecto, idUsuario);
+            TempData["EstudianteAgregado"] = true;
 
             return RedirectToAction("DetalleProyecto", new { idProyecto, idCurso });
         }
@@ -124,6 +129,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
             ViewBag.IdCurso = idCurso;
             ViewBag.IdUsuario = idUsuario;
 
+            
             return View(); // Vista: Views/ProyectoProfesor/CrearTareaEnProyecto.cshtml
         }
         [HttpPost]
@@ -147,6 +153,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
             };
 
             _tareaBLL.AgregarTarea(tarea);
+            TempData["TareaCreada"] = true;
 
             return RedirectToAction("DetalleProyecto", new { idProyecto, idCurso });
         }
@@ -197,6 +204,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
 
             // 3. Obtener todos los estudiantes del curso
             var estudiantesDelCurso = _usuarioBLL.ObtenerEstudiantesPorCurso(idCurso);
+            var curso = _cursoBLL.ObtenerCursoPorId(idCurso);
 
             // 4. Filtrar estudiantes NO asignados
             var estudiantesDisponibles = estudiantesDelCurso
@@ -209,6 +217,7 @@ namespace Gestor_de_Proyectos_Académicos.Controllers
                 IdProyecto = idProyecto,
                 IdCurso = idCurso,
                 NombreProyecto = proyecto.Nombre_Proyecto,
+                CodigoCurso = curso.CodigoCurso,
                 EstudiantesAsignados = estudiantesAsignados,
                 EstudiantesDisponibles = estudiantesDisponibles
             };

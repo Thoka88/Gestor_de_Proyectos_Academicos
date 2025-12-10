@@ -8,6 +8,7 @@ namespace Gestor_de_Proyectos_Académicos.Models
         public int IdProyecto { get; set; }
         public int IdCurso { get; set; }
         public string NombreProyecto { get; set; }
+        public string CodigoCurso { get; set; }
 
         public List<Usuarios> EstudiantesAsignados { get; set; } = new();
         public List<Usuarios> EstudiantesDisponibles { get; set; } = new();
