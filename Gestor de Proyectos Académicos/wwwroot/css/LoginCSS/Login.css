@@ -1,13 +1,150 @@
 ﻿body {
     background: url('../../recursos/FondoLiso.svg') no-repeat center center fixed;
     background-size: cover;
+    background-attachment: fixed;
     height: 100vh
 }
 
 .InicioSesion {
-    background: rgba(255, 255, 255, 0.95);
-    color: blue;
+    background: rgba(120, 120, 120, 0.95);
+    color: #fff;
     padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0,0,0,.15);
+    box-shadow: 0 0 25px rgba(0, 0, 0, .25);
 }
+
+.fondo-login {
+    background-image: url('../../resources/login/fondolisologinofc.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+
+.BtnLogin {
+    font-size: 18px;
+    color: #e1e1e1;
+    font-family: inherit;
+    font-weight: 800;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    background: none;
+    text-transform: uppercase;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-duration: 400ms;
+    transition-property: color;
+}
+
+    .BtnLogin:focus,
+    .BtnLogin:hover {
+        color: #fff;
+    }
+
+        .BtnLogin:focus:after,
+        .BtnLogin:hover:after {
+            width: 100%;
+            left: 0%;
+        }
+
+    .BtnLogin:after {
+        content: "";
+        pointer-events: none;
+        bottom: -2px;
+        left: 50%;
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background-color: #fff;
+        transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+        transition-duration: 400ms;
+        transition-property: width, left;
+    }
+
+.checkBox {
+    cursor: pointer;
+    display: inline-block;
+}
+
+    .checkBox input {
+        display: none;
+    }
+
+    .checkBox svg {
+        overflow: visible;
+    }
+
+    .checkBox .path {
+        fill: none;
+        stroke: white;
+        stroke-width: 6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+        stroke-dasharray: 241 9999999;
+        stroke-dashoffset: 0;
+    }
+
+    .checkBox input:checked ~ svg .path {
+        stroke-dasharray: 70.5096664428711 9999999;
+        stroke-dashoffset: -262.2723388671875;
+    }
+
+.TextBoxLogin {
+    position: relative;
+    margin: 50px auto;
+    width: 200px;
+}
+
+    .TextBoxLogin input {
+        font-size: 20px;
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        padding: 5px 0;
+        background-color: transparent;
+        outline: none;
+        color: white;
+    }
+
+    .TextBoxLogin .label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #ccc;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .TextBoxLogin input:focus ~ .label,
+    .TextBoxLogin input:valid ~ .label {
+        top: -20px;
+        font-size: 16px;
+        color: #fff;
+    }
+
+    .TextBoxLogin .underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background-color: #fff;
+        transform: scaleX(0);
+        transition: all 0.3s ease;
+    }
+
+    .TextBoxLogin input:focus ~ .underline,
+    .TextBoxLogin input:valid ~ .underline {
+        transform: scaleX(1);
+    }
+
+
+.LinkRef a {
+    color: #001F3F; /* Azul muy oscuro */
+    text-decoration: none; /* Opcional: quita el subrayado */
+}
+
+    .LinkRef a:hover {
+        text-decoration: underline; /* Opcional: subrayado al pasar el mouse */
+    }

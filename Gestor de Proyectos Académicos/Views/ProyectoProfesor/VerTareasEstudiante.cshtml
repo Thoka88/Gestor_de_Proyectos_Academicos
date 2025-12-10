@@ -4,63 +4,73 @@
     ViewData["Title"] = "Tareas del estudiante";
 }
 
-<div class="container mt-4">
-    <h2>
-        Tareas de @Model.NombreEstudiante
-        <small class="text-muted">en el proyecto @Model.NombreProyecto</small>
-    </h2>
-    <hr />
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script defer src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/proyectoprofesorjs/vertareasestudiante.js"></script>
+	<link href="~/css/proyectoprofesorcss/vertareasestudiante.css" rel="stylesheet" />
+</head>
 
-    <!-- Resumen rápido -->
-    @{
-        int total = Model.Tareas.Count;
-        int completadas = Model.Tareas.Count(t => t.Estado_Tarea == "Completada");
-        double porcentaje = total == 0 ? 0 : (completadas * 100.0 / total);
-    }
+<body class="fondoVerTareas">
 
-    <div class="alert alert-info">
-        Total de tareas: <strong>@total</strong> |
-        Completadas: <strong>@completadas</strong> |
-        Avance: <strong>@porcentaje.ToString("0.0")%</strong>
+    <div class="container mt-4">
+        <h2 style="color: white">
+            Tareas de @Model.NombreEstudiante
+            <small >en el proyecto @Model.NombreProyecto</small>
+        </h2>
+        <hr />
+
+        <!-- Resumen rápido -->
+        @{
+            int total = Model.Tareas.Count;
+            int completadas = Model.Tareas.Count(t => t.Estado_Tarea == "Completada");
+            double porcentaje = total == 0 ? 0 : (completadas * 100.0 / total);
+        }
+
+        <div class="alert alert-info">
+            Total de tareas: <strong>@total</strong> |
+            Completadas: <strong>@completadas</strong> |
+            Avance: <strong>@porcentaje.ToString("0.0")%</strong>
+        </div>
+
+       
+        @if (Model.Tareas != null && Model.Tareas.Any())
+        {
+            <table class="table table-light table-striped table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Fecha límite</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.Tareas)
+                    {
+                        <tr>
+                            <td>@t.Titulo_Tarea</td>
+                            <td>@t.Descripcion_Tarea</td>
+                            <td>@t.Estado_Tarea</td>
+                            <td>@t.Fecha_Finalizacion.ToShortDateString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                Este estudiante aún no tiene tareas en este proyecto.
+            </div>
+        }
+
+        <a asp-action="DetalleProyecto"
+           asp-route-idProyecto="@Model.IdProyecto"
+           asp-route-idCurso="@Model.IdCurso"
+           class="btn BtnVerTareas">
+            Volver al proyecto
+        </a>
     </div>
 
-    <!-- Tabla de tareas -->
-    @if (Model.Tareas != null && Model.Tareas.Any())
-    {
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Fecha límite</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var t in Model.Tareas)
-                {
-                    <tr>
-                        <td>@t.Titulo_Tarea</td>
-                        <td>@t.Descripcion_Tarea</td>
-                        <td>@t.Estado_Tarea</td>
-                        <td>@t.Fecha_Finalizacion.ToShortDateString()</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="alert alert-warning">
-            Este estudiante aún no tiene tareas en este proyecto.
-        </div>
-    }
-
-    <a asp-action="DetalleProyecto"
-       asp-route-idProyecto="@Model.IdProyecto"
-       asp-route-idCurso="@Model.IdCurso"
-       class="btn btn-outline-secondary mt-3">
-        Volver al proyecto
-    </a>
-</div>
-
+</body>

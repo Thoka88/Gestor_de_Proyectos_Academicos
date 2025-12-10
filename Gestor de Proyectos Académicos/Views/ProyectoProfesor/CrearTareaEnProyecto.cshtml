@@ -2,46 +2,63 @@
     ViewData["Title"] = "Crear tarea para estudiante";
 }
 
-<div class="container mt-4">
-    <h3>Asignar tarea al estudiante (Id: @ViewBag.IdUsuario)</h3>
-    <hr />
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script defer src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/proyectoprofesorjs/creartarea.js"></script>
+	<link href="~/css/proyectoprofesorcss/creartarea.css" rel="stylesheet" />
+</head>
 
-    <form asp-action="CrearTareaEnProyecto" method="post">
-        <input type="hidden" name="idProyecto" value="@ViewBag.IdProyecto" />
-        <input type="hidden" name="idCurso" value="@ViewBag.IdCurso" />
-        <input type="hidden" name="idUsuario" value="@ViewBag.IdUsuario" />
 
-        <div class="mb-3">
-            <label class="form-label">Título de la tarea</label>
-            <input type="text" name="titulo" class="form-control" required />
-        </div>
+<body class="fondoCreTar">
 
-        <div class="mb-3">
-            <label class="form-label">Descripción</label>
-            <textarea name="descripcion" class="form-control" rows="3"></textarea>
-        </div>
+    <div class="container mt-4">
+        <h3 style="color:white">Asignar tarea al estudiante </h3>
+        <hr />
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="form-label">Fecha inicio</label>
-                <input type="date" name="fechaInicio" class="form-control" required />
+        <form asp-action="CrearTareaEnProyecto" method="post">
+            <input type="hidden" name="idProyecto" value="@ViewBag.IdProyecto" />
+            <input type="hidden" name="idCurso" value="@ViewBag.IdCurso" />
+            <input type="hidden" name="idUsuario" value="@ViewBag.IdUsuario" />
+
+            <div class="Textbox col-md-12">
+                <input type="text" id="tituloTarea" name="titulo" required>
+                <label for="tituloTarea" class="label">Título de la tarea</label>
+                <div class="underline"></div>
             </div>
-            <div class="col-md-6">
-                <label class="form-label">Fecha fin</label>
-                <input type="date" name="fechaFin" class="form-control" required />
+
+            <div class="TextBoxArea col-md-12">
+                <textarea id="descripcionTarea" name="descripcion" rows="3" required></textarea>
+                <label for="descripcionTarea" class="label">Descripción</label>
+                <div class="underline"></div>
             </div>
-        </div>
 
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-check-circle"></i> Guardar tarea
-        </button>
+            <div class="row">
+                <div class="Textbox col-md-6 fijoArriba">
+                    <input type="date" id="fechaInicio" name="fechaInicio" required>
+                    <label for="fechaInicio" class="label">Fecha inicio</label>
+                    <div class="underline"></div>
+                </div>
 
-        <a asp-action="DetalleProyecto"
-           asp-route-idProyecto="@ViewBag.IdProyecto"
-           asp-route-idCurso="@ViewBag.IdCurso"
-           class="btn btn-secondary ms-2">
-            Cancelar
-        </a>
-    </form>
-</div>
+                <div class="Textbox col-md-6 fijoArriba">
+                    <input type="date" id="fechaFin" name="fechaFin" required>
+                    <label for="fechaFin" class="label">Fecha fin</label>
+                    <div class="underline"></div>
+                </div>
+            </div>
 
+
+            <button type="submit" class="btn BtnProyVerd">
+               Guardar tarea
+            </button>
+
+            <a asp-action="DetalleProyecto"
+               asp-route-idProyecto="@ViewBag.IdProyecto"
+               asp-route-idCurso="@ViewBag.IdCurso"
+               class="btn BtnCrearT">
+                Cancelar
+            </a>
+        </form>
+    </div>
+
+</body>
